@@ -19,18 +19,18 @@ const DELAY = 400;
 
 export default function Terminal() {
   return (
-    <div class="w-full rounded-lg border border-cian/20 bg-fondo/90 p-4 font-mono text-sm shadow-lg">
-      <div class="mb-2 flex items-center gap-2 border-b border-cian/10 pb-2">
-        <span class="h-3 w-3 rounded-full bg-red-500" />
-        <span class="h-3 w-3 rounded-full bg-yellow-500" />
-        <span class="h-3 w-3 rounded-full bg-green-500" />
-        <span class="ml-2 text-xs text-texto/50">terminal — heridev</span>
+    <div className="w-full rounded-lg border border-cian/20 bg-fondo/90 p-4 font-mono text-sm shadow-lg">
+      <div className="mb-2 flex items-center gap-2 border-b border-cian/10 pb-2">
+        <span className="h-3 w-3 rounded-full bg-red-500" />
+        <span className="h-3 w-3 rounded-full bg-yellow-500" />
+        <span className="h-3 w-3 rounded-full bg-green-500" />
+        <span className="ml-2 text-xs text-texto/50">terminal — heridev</span>
       </div>
-      <div class="space-y-0.5">
+      <div className="space-y-0.5">
         {LINES.map((line, i) => (
-          <div key={i} class="flex h-5 items-center">
+          <div key={i} className="flex h-5 items-center">
             <span
-              class="inline-block overflow-hidden whitespace-nowrap text-texto/80"
+              className="inline-block overflow-hidden whitespace-nowrap text-texto/80"
               style={{
                 clipPath: "inset(0 100% 0 0)",
                 animation: `typing ${line.length * SPEED}ms ${i * DELAY}ms forwards`,
@@ -40,7 +40,7 @@ export default function Terminal() {
             </span>
             {i === LINES.length - 1 && (
               <span
-                class="ml-0.5 inline-block h-4 w-2 bg-cian"
+                className="ml-0.5 inline-block h-4 w-2 bg-cian"
                 style={{
                   opacity: 0,
                   animation: `blink 0.5s step-end infinite alternate ${(LINES.length - 1) * DELAY + LINES[LINES.length - 1].length * SPEED}ms`,

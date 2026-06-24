@@ -1,11 +1,12 @@
-const GITHUB_USER = "HeriDev";
+const GITHUB_USER = "herizador";
 
 export async function getRepos() {
-  const token = import.meta.env.GITHUB_TOKEN;
-  const tokenValido = token && token !== "undefined" && token !== "";
+  console.log("Token cargado:", !!import.meta.env.GITHUB_TOKEN);
 
-  const headers = tokenValido
-    ? { Authorization: `Bearer ${token}` }
+  const headers = import.meta.env.GITHUB_TOKEN &&
+    import.meta.env.GITHUB_TOKEN !== "undefined" &&
+    import.meta.env.GITHUB_TOKEN !== ""
+    ? { Authorization: `Bearer ${import.meta.env.GITHUB_TOKEN}` }
     : {};
 
   try {
@@ -23,9 +24,4 @@ export async function getRepos() {
   } catch {
     return [];
   }
-}
-
-export function getTokenStatus() {
-  const token = import.meta.env.GITHUB_TOKEN;
-  return token && token !== "undefined" && token !== "";
 }

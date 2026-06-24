@@ -3,10 +3,12 @@ import LayoutCyberpunk from "../layouts/LayoutCyberpunk.astro";
 import CardProyecto from "../components/astro/CardProyecto.astro";
 import SplineViewer from "../components/react/SplineViewer.jsx";
 import Terminal from "../components/react/Terminal.jsx";
-import { getRepos, getTokenStatus } from "../services/github";
+import { getRepos } from "../services/github";
 
 const repos = await getRepos();
-const tokenValido = getTokenStatus();
+const tokenValido = import.meta.env.GITHUB_TOKEN &&
+  import.meta.env.GITHUB_TOKEN !== "undefined" &&
+  import.meta.env.GITHUB_TOKEN !== "";
 
 const joyas = [
   {
@@ -14,7 +16,7 @@ const joyas = [
     descripcion: "Cloud de almacenamiento de objetos con Cloudflare R2, base de datos e historial con Supabase, y gestión de usuarios de forma segura.",
     tags: ["Cloudflare R2", "Supabase", "React", "Node.js"],
     icono: "🏠",
-    href: "https://github.com/HeriDev/gestor-familiar",
+    href: "https://github.com/herizador/gestor-familiar",
     destacado: true,
   },
   {
@@ -22,7 +24,7 @@ const joyas = [
     descripcion: "Aplicación avanzada para compartir media y archivos de audio con streaming en tiempo real.",
     tags: ["Audio", "Streaming", "React", "WebSockets"],
     icono: "🎵",
-    href: "https://github.com/HeriDev/audioshare",
+    href: "https://github.com/herizador/audioshare",
     destacado: true,
   },
   {
@@ -30,7 +32,7 @@ const joyas = [
     descripcion: "Software enfocado en seguridad, educación y comunicación en entornos infantiles.",
     tags: ["Seguridad", "Educación", "Comunicación"],
     icono: "🔒",
-    href: "https://github.com/HeriDev/kidlink",
+    href: "https://github.com/herizador/kidlink",
     destacado: true,
   },
 ];
@@ -41,14 +43,14 @@ const javaProyectos = [
     descripcion: "Sistema de gestión empresarial desarrollado en Java. Demuestra POO, patrones de diseño y lógica backend robusta.",
     tags: ["Java", "POO", "Oracle SQL"],
     icono: "☕",
-    href: "https://github.com/HeriDev/proyecto-empresa",
+    href: "https://github.com/herizador/proyecto-empresa",
   },
   {
     titulo: "Proyecto Biblioteca",
     descripcion: "Aplicación de gestión bibliotecaria que valida certificación Oracle Java y Oracle SQL.",
     tags: ["Java", "Oracle SQL", "CRUD"],
     icono: "📚",
-    href: "https://github.com/HeriDev/proyecto-biblioteca",
+    href: "https://github.com/herizador/proyecto-biblioteca",
   },
 ];
 ---
@@ -79,7 +81,7 @@ const javaProyectos = [
             Ver proyectos
           </a>
           <a
-            href="https://github.com/HeriDev"
+            href="https://github.com/herizador"
             target="_blank"
             rel="noopener noreferrer"
             class="rounded border border-morado bg-morado/10 px-6 py-2 text-sm font-medium text-morado tracking-wider transition-all hover:bg-morado hover:text-white"
@@ -168,7 +170,7 @@ const javaProyectos = [
     </p>
     <div class="flex flex-wrap gap-4">
       <a
-        href="https://github.com/HeriDev"
+        href="https://github.com/herizador"
         target="_blank"
         rel="noopener noreferrer"
         class="rounded border border-gris px-4 py-2 text-sm text-texto/70 transition-all hover:border-cian hover:text-cian"
