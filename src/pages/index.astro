@@ -1,0 +1,213 @@
+---
+import LayoutCyberpunk from "../layouts/LayoutCyberpunk.astro";
+import CardProyecto from "../components/astro/CardProyecto.astro";
+import SplineViewer from "../components/react/SplineViewer.jsx";
+import Terminal from "../components/react/Terminal.jsx";
+
+const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN;
+const GITHUB_USER = "HeriDev";
+
+const headers = GITHUB_TOKEN
+  ? { Authorization: `Bearer ${GITHUB_TOKEN}` }
+  : {};
+
+let repos = [];
+
+try {
+  const res = await fetch(
+    `https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=updated`,
+    { headers }
+  );
+  if (res.ok) {
+    const data = await res.json();
+    repos = data
+      .filter((repo) => repo.private === false && repo.fork === false)
+      .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+  }
+} catch (e) {
+  console.error("Error fetching GitHub repos:", e);
+}
+
+const joyas = [
+  {
+    titulo: "Gestor Familiar",
+    descripcion: "Cloud de almacenamiento de objetos con Cloudflare R2, base de datos e historial con Supabase, y gestión de usuarios de forma segura.",
+    tags: ["Cloudflare R2", "Supabase", "React", "Node.js"],
+    icono: "🏠",
+    href: "https://github.com/HeriDev/gestor-familiar",
+    destacado: true,
+  },
+  {
+    titulo: "AudioShare",
+    descripcion: "Aplicación avanzada para compartir media y archivos de audio con streaming en tiempo real.",
+    tags: ["Audio", "Streaming", "React", "WebSockets"],
+    icono: "🎵",
+    href: "https://github.com/HeriDev/audioshare",
+    destacado: true,
+  },
+  {
+    titulo: "KidLink",
+    descripcion: "Software enfocado en seguridad, educación y comunicación en entornos infantiles.",
+    tags: ["Seguridad", "Educación", "Comunicación"],
+    icono: "🔒",
+    href: "https://github.com/HeriDev/kidlink",
+    destacado: true,
+  },
+];
+
+const javaProyectos = [
+  {
+    titulo: "Proyecto Empresa",
+    descripcion: "Sistema de gestión empresarial desarrollado en Java. Demuestra POO, patrones de diseño y lógica backend robusta.",
+    tags: ["Java", "POO", "Oracle SQL"],
+    icono: "☕",
+    href: "https://github.com/HeriDev/proyecto-empresa",
+  },
+  {
+    titulo: "Proyecto Biblioteca",
+    descripcion: "Aplicación de gestión bibliotecaria que valida certificación Oracle Java y Oracle SQL.",
+    tags: ["Java", "Oracle SQL", "CRUD"],
+    icono: "📚",
+    href: "https://github.com/HeriDev/proyecto-biblioteca",
+  },
+];
+---
+
+<LayoutCyberpunk title="HeriDev — Portfolio Cyberpunk" description="Desarrollador Web Full Stack · Astro · React · 3D">
+  <section id="inicio" class="mb-24">
+    <div class="grid items-center gap-12 md:grid-cols-2">
+      <div>
+        <p class="mb-2 text-sm tracking-widest text-cian uppercase">Hola, soy</p>
+        <h1 class="mb-4 text-4xl font-bold text-white md:text-5xl">
+          Ismael Mateo<br />
+          <span class="bg-gradient-to-r from-cian to-morado bg-clip-text text-transparent">
+            Díaz Gutiérrez
+          </span>
+        </h1>
+        <p class="mb-6 text-lg text-texto/70">
+          <span class="text-cian">&gt;</span> Ingeniero de Software &amp; Arquitecto de Interfaces
+        </p>
+        <p class="mb-8 text-sm text-texto/50 leading-relaxed">
+          Técnico en Sistemas Microinformáticos y Redes · Estudiante de DAW · 
+          Certificado Oracle Java y Oracle SQL · Especializado en Astro, React y arquitecturas Serverless.
+        </p>
+        <div class="flex gap-4">
+          <a
+            href="#joyas"
+            class="rounded border border-cian bg-cian/10 px-6 py-2 text-sm font-medium text-cian tracking-wider transition-all hover:bg-cian hover:text-fondo"
+          >
+            Ver proyectos
+          </a>
+          <a
+            href="https://github.com/HeriDev"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="rounded border border-morado bg-morado/10 px-6 py-2 text-sm font-medium text-morado tracking-wider transition-all hover:bg-morado hover:text-white"
+          >
+            GitHub
+          </a>
+        </div>
+      </div>
+      <div class="hidden md:block">
+        <SplineViewer client:visible scene="https://prod.spline.design/your-scene-id/scene.splinecode" />
+      </div>
+    </div>
+  </section>
+
+  <section id="terminal" class="mb-24">
+    <h2 class="mb-8 text-2xl font-semibold text-white">
+      <span class="text-cian">$</span> Terminal
+    </h2>
+    <Terminal client:visible />
+  </section>
+
+  <section id="joyas" class="mb-24">
+    <h2 class="mb-2 text-2xl font-semibold text-white">
+      <span class="text-cian">#</span> Las Joyas de la Corona
+    </h2>
+    <p class="mb-8 text-sm text-texto/50">
+      Proyectos estrella que definen mi stack y filosofía de desarrollo.
+    </p>
+    <div class="grid gap-6 md:grid-cols-3">
+      {joyas.map((proyecto) => (
+        <CardProyecto {...proyecto} />
+      ))}
+    </div>
+  </section>
+
+  <section id="java" class="mb-24">
+    <h2 class="mb-2 text-2xl font-semibold text-white">
+      <span class="text-cian">#</span> Proyectos Java
+    </h2>
+    <p class="mb-8 text-sm text-texto/50">
+      Lógica backend robusta y validación de certificaciones Oracle.
+    </p>
+    <div class="grid gap-6 md:grid-cols-2">
+      {javaProyectos.map((proyecto) => (
+        <CardProyecto {...proyecto} />
+      ))}
+    </div>
+  </section>
+
+  <section id="github" class="mb-24">
+    <h2 class="mb-2 text-2xl font-semibold text-white">
+      <span class="text-cian">#</span> Nodos de GitHub
+    </h2>
+    <p class="mb-8 text-sm text-texto/50">
+      Repositorios públicos sincronizados en build-time.
+      {!GITHUB_TOKEN && (
+        <span class="block mt-2 text-yellow-400">
+          ⚠️ GITHUB_TOKEN no configurado. Con token obtienes mayor rate-limit.
+        </span>
+      )}
+    </p>
+    {repos.length > 0 ? (
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {repos.slice(0, 12).map((repo) => (
+          <CardProyecto
+            titulo={repo.name}
+            descripcion={repo.description || "Sin descripción"}
+            tags={[repo.language || "Varios", `${repo.stargazers_count} ★`]}
+            href={repo.html_url}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="rounded-lg border border-gris bg-gris/30 p-8 text-center">
+        <p class="text-texto/50">
+          No se pudieron cargar los repositorios. Verifica que GITHUB_TOKEN esté configurado y que el usuario exista.
+        </p>
+      </div>
+    )}
+  </section>
+
+  <section id="contacto">
+    <h2 class="mb-2 text-2xl font-semibold text-white">
+      <span class="text-cian">#</span> Contacto
+    </h2>
+    <p class="mb-8 text-sm text-texto/50">
+      ¿Hablamos?
+    </p>
+    <div class="flex flex-wrap gap-4">
+      <a
+        href="https://github.com/HeriDev"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="rounded border border-gris px-4 py-2 text-sm text-texto/70 transition-all hover:border-cian hover:text-cian"
+      >
+        GitHub
+      </a>
+      <a
+        href="https://linkedin.com/in/HeriDev"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="rounded border border-gris px-4 py-2 text-sm text-texto/70 transition-all hover:border-cian hover:text-cian"
+      >
+        LinkedIn
+      </a>
+      <span class="rounded border border-gris px-4 py-2 text-sm text-texto/50">
+        heridev@proton.me
+      </span>
+    </div>
+  </section>
+</LayoutCyberpunk>

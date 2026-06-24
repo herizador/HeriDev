@@ -1,0 +1,28 @@
+---
+const links = [
+  { href: "#inicio", label: "Inicio" },
+  { href: "#joyas", label: "Proyectos" },
+  { href: "#github", label: "GitHub" },
+  { href: "#contacto", label: "Contacto" },
+];
+---
+
+<nav class="fixed top-0 left-0 right-0 z-50 border-b border-cian/20 bg-fondo/80 backdrop-blur-md">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+    <a href="/" class="font-bold text-lg tracking-wider text-cian hover:text-morado transition-colors">
+      &lt;HeriDev /&gt;
+    </a>
+    <ul class="flex gap-6">
+      {links.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class="relative text-sm uppercase tracking-wider text-texto/70 hover:text-cian transition-colors after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:bg-cian after:transition-all hover:after:w-full"
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>
