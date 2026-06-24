@@ -15,9 +15,13 @@
   z-index: 9999;
 }
 
-@font-face {
-  font-family: "Fira Code";
-  src: url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap");
+@keyframes typing {
+  to { max-width: 9999px; }
+}
+
+@keyframes blink {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 html {
@@ -25,7 +29,6 @@ html {
 }
 
 body {
-  font-family: "Fira Code", monospace;
   background-color: #05050a;
   color: #e0e0e0;
 }

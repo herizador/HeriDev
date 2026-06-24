@@ -1,5 +1,3 @@
-import { useState, useEffect, useCallback } from "react";
-
 const lines = [
   "> heridev@portfolio:~$ ./init --profile",
   "> Cargando perfil...",
@@ -16,33 +14,10 @@ const lines = [
   "> Listo. Puerto 3000.",
 ];
 
+const SPEED = 30;
+const LINE_DELAY = 400;
+
 export default function Terminal() {
-  const [visibleLines, setVisibleLines] = useState(1);
-  const [currentText, setCurrentText] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-
-  const typeLine = useCallback((line, index) => {
-    if (index >= lines.length) return;
-    setIsTyping(true);
-    let charIndex = 0;
-    const interval = setInterval(() => {
-      charIndex++;
-      setCurrentText(line.slice(0, charIndex));
-      if (charIndex >= line.length) {
-        clearInterval(interval);
-        setIsTyping(false);
-        setVisibleLines((prev) => prev + 1);
-        setTimeout(() => {
-          typeLine(lines[index + 1], index + 1);
-        }, 300);
-      }
-    }, 25);
-  }, []);
-
-  useEffect(() => {
-    setTimeout(() => typeLine(lines[0], 0), 500);
-  }, [typeLine]);
-
   return (
     <div class="w-full rounded-lg border border-cian/20 bg-fondo/90 p-4 font-mono text-sm shadow-lg">
       <div class="mb-2 flex items-center gap-2 border-b border-cian/10 pb-2">
@@ -51,18 +26,30 @@ export default function Terminal() {
         <span class="h-3 w-3 rounded-full bg-green-500" />
         <span class="ml-2 text-xs text-texto/50">terminal — heridev</span>
       </div>
-      <div class="space-y-1">
-        {lines.slice(0, visibleLines - 1).map((line, i) => (
-          <div key={i} class="text-texto/80">
-            {line}
+      <div class="space-y-0.5">
+        {lines.map((line, i) => (
+          <div key={i} class="flex">
+            <span
+              class="inline-block overflow-hidden whitespace-nowrap text-texto/80"
+              style={{
+                maxWidth: 0,
+                animation: `typing ${line.length * SPEED}ms ${i * LINE_DELAY}ms forwards`,
+              }}
+            >
+              {line}
+            </span>
+            {i === lines.length - 1 && (
+              <span
+                class="inline-block h-4 w-2 bg-cian"
+                style={{
+                  opacity: 0,
+                  animation: "blink 0.5s step-end infinite alternate",
+                  animationDelay: `${(lines.length - 1) * LINE_DELAY + lines[lines.length - 1].length * SPEED}ms`,
+                }}
+              />
+            )}
           </div>
         ))}
-        {visibleLines <= lines.length && (
-          <div class="text-cian">
-            {currentText}
-            <span class="animate-neon-pulse ml-1 inline-block h-4 w-2 bg-cian" />
-          </div>
-        )}
       </div>
     </div>
   );
