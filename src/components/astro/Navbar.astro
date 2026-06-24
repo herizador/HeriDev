@@ -12,7 +12,12 @@ const links = [
     <a href="/" class="font-bold text-lg tracking-wider text-cian hover:text-morado transition-colors">
       &lt;HeriDev /&gt;
     </a>
-    <ul class="flex gap-6">
+    <button id="menu-toggle" class="flex flex-col gap-1.5 md:hidden" aria-label="Menú">
+      <span class="block h-0.5 w-6 bg-cian transition-all" />
+      <span class="block h-0.5 w-6 bg-cian transition-all" />
+      <span class="block h-0.5 w-6 bg-cian transition-all" />
+    </button>
+    <ul class="hidden md:flex md:gap-6">
       {links.map((link) => (
         <li>
           <a
@@ -25,4 +30,32 @@ const links = [
       ))}
     </ul>
   </div>
+  <div id="menu-overlay" class="hidden flex-col border-t border-cian/20 bg-fondo/95 px-4 py-4 md:hidden">
+    {links.map((link) => (
+      <a
+        href={link.href}
+        class="block py-2 text-sm uppercase tracking-wider text-texto/70 hover:text-cian transition-colors"
+      >
+        {link.label}
+      </a>
+    ))}
+  </div>
 </nav>
+
+<script>
+  (function() {
+    var toggle = document.getElementById("menu-toggle");
+    var overlay = document.getElementById("menu-overlay");
+    if (!toggle || !overlay) return;
+    toggle.addEventListener("click", function() {
+      overlay.classList.toggle("hidden");
+      overlay.classList.toggle("flex");
+    });
+    overlay.querySelectorAll("a").forEach(function(a) {
+      a.addEventListener("click", function() {
+        overlay.classList.add("hidden");
+        overlay.classList.remove("flex");
+      });
+    });
+  })();
+</script>

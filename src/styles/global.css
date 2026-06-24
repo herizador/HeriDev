@@ -21,6 +21,11 @@
   to { clip-path: inset(0 0 0 0); }
 }
 
+@keyframes tw-terminal {
+  from { max-width: 0; border-color: #00f3ff; }
+  to { max-width: 100%; border-color: transparent; }
+}
+
 @keyframes blink-cursor {
   0%, 30% { border-color: #00f3ff; }
   30%, 100% { border-color: transparent; }
@@ -116,6 +121,19 @@
 }
 html {
   overflow-x: hidden;
+}
+
+@media (max-width: 640px) {
+  .tw {
+    max-width: 100%;
+    white-space: normal;
+    overflow: visible;
+    border-right: none;
+    animation: none;
+  }
+  .tw-desc {
+    clip-path: none;
+  }
 }
 
 body {
