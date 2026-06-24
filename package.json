@@ -9,16 +9,17 @@
   },
   "dependencies": {
     "@astrojs/react": "^3.6.3",
+    "@astrojs/tailwind": "^6.0.2",
     "@astrojs/vercel": "^9.0.5",
     "@splinetool/react-spline": "^4.1.0",
     "@splinetool/runtime": "^1.12.97",
-    "@tailwindcss/vite": "^4.3.1",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
     "astro": "^5.18.2",
+    "postcss": "^8.5.15",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "tailwind-merge": "^3.6.0",
-    "tailwindcss": "^4.3.1"
+    "tailwindcss": "^3.4.19"
   }
 }

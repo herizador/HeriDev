@@ -1,39 +1,6 @@
-@import "tailwindcss";
-
-@theme {
-  --color-fondo: #05050a;
-  --color-cian: #00f3ff;
-  --color-morado: #9d00ff;
-  --color-gris: #1a1a2e;
-  --color-texto: #e0e0e0;
-}
-
-@keyframes glitch {
-  0%, 100% { transform: translate(0); }
-  20% { transform: translate(-2px, 2px); }
-  40% { transform: translate(2px, -2px); }
-  60% { transform: translate(-1px, 1px); }
-  80% { transform: translate(1px, -1px); }
-}
-
-@keyframes scanline {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
-}
-
-@keyframes neon-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
-
-@keyframes typing {
-  from { width: 0; }
-  to { width: 100%; }
-}
-
-.animate-glitch:hover {
-  animation: glitch 0.3s ease-in-out;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 .animate-scanline::after {
   content: "";
@@ -48,10 +15,6 @@
   z-index: 9999;
 }
 
-.animate-neon-pulse {
-  animation: neon-pulse 2s ease-in-out infinite;
-}
-
 @font-face {
   font-family: "Fira Code";
   src: url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap");
@@ -63,13 +26,13 @@ html {
 
 body {
   font-family: "Fira Code", monospace;
-  background-color: var(--color-fondo);
-  color: var(--color-texto);
+  background-color: #05050a;
+  color: #e0e0e0;
 }
 
 ::selection {
-  background-color: var(--color-cian);
-  color: var(--color-fondo);
+  background-color: #00f3ff;
+  color: #05050a;
 }
 
 ::-webkit-scrollbar {
@@ -77,10 +40,10 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-fondo);
+  background: #05050a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-cian);
+  background: #00f3ff;
   border-radius: 3px;
 }
