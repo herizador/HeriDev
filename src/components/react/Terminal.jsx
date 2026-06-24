@@ -1,4 +1,4 @@
-const lines = [
+const LINES = [
   "> heridev@portfolio:~$ ./init --profile",
   "> Cargando perfil...",
   "> Nombre: Ismael Mateo Díaz Gutiérrez",
@@ -15,7 +15,7 @@ const lines = [
 ];
 
 const SPEED = 30;
-const LINE_DELAY = 400;
+const DELAY = 400;
 
 export default function Terminal() {
   return (
@@ -27,24 +27,23 @@ export default function Terminal() {
         <span class="ml-2 text-xs text-texto/50">terminal — heridev</span>
       </div>
       <div class="space-y-0.5">
-        {lines.map((line, i) => (
-          <div key={i} class="flex">
+        {LINES.map((line, i) => (
+          <div key={i} class="flex h-5 items-center">
             <span
               class="inline-block overflow-hidden whitespace-nowrap text-texto/80"
               style={{
-                maxWidth: 0,
-                animation: `typing ${line.length * SPEED}ms ${i * LINE_DELAY}ms forwards`,
+                clipPath: "inset(0 100% 0 0)",
+                animation: `typing ${line.length * SPEED}ms ${i * DELAY}ms forwards`,
               }}
             >
               {line}
             </span>
-            {i === lines.length - 1 && (
+            {i === LINES.length - 1 && (
               <span
-                class="inline-block h-4 w-2 bg-cian"
+                class="ml-0.5 inline-block h-4 w-2 bg-cian"
                 style={{
                   opacity: 0,
-                  animation: "blink 0.5s step-end infinite alternate",
-                  animationDelay: `${(lines.length - 1) * LINE_DELAY + lines[lines.length - 1].length * SPEED}ms`,
+                  animation: `blink 0.5s step-end infinite alternate ${(LINES.length - 1) * DELAY + LINES[LINES.length - 1].length * SPEED}ms`,
                 }}
               />
             )}

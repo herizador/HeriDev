@@ -3,37 +3,10 @@ import LayoutCyberpunk from "../layouts/LayoutCyberpunk.astro";
 import CardProyecto from "../components/astro/CardProyecto.astro";
 import SplineViewer from "../components/react/SplineViewer.jsx";
 import Terminal from "../components/react/Terminal.jsx";
+import { getRepos, getTokenStatus } from "../services/github";
 
-const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN;
-const GITHUB_USER = "HeriDev";
-const tokenValido = GITHUB_TOKEN && GITHUB_TOKEN !== "undefined" && GITHUB_TOKEN !== "";
-
-const headers = tokenValido
-  ? { Authorization: `Bearer ${GITHUB_TOKEN}` }
-  : {};
-
-let repos = [];
-let errorGitHub = "";
-
-try {
-  const res = await fetch(
-    `https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=updated`,
-    { headers }
-  );
-  if (res.ok) {
-    const data = await res.json();
-    repos = data
-      .filter((repo) => repo.private === false && repo.fork === false)
-      .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
-    if (repos.length === 0) {
-      errorGitHub = "No hay repositorios públicos que mostrar.";
-    }
-  } else {
-    errorGitHub = `GitHub respondió con estado ${res.status}.`;
-  }
-} catch (e) {
-  errorGitHub = "Error de red al consultar GitHub.";
-}
+const repos = await getRepos();
+const tokenValido = getTokenStatus();
 
 const joyas = [
   {
@@ -181,7 +154,7 @@ const javaProyectos = [
       </div>
     ) : (
       <div class="rounded-lg border border-gris bg-gris/30 p-8 text-center">
-        <p class="text-texto/50">{errorGitHub || "No se pudieron cargar los repositorios."}</p>
+        <p class="text-texto/50">No hay repositorios públicos para mostrar.</p>
       </div>
     )}
   </section>

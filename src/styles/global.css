@@ -16,7 +16,7 @@
 }
 
 @keyframes typing {
-  to { max-width: 9999px; }
+  to { clip-path: inset(0 0 0 0); }
 }
 
 @keyframes blink {
@@ -24,9 +24,7 @@
   100% { opacity: 1; }
 }
 
-html {
-  scroll-behavior: smooth;
-}
+
 
 body {
   background-color: #05050a;
