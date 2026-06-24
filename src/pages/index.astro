@@ -6,12 +6,14 @@ import Terminal from "../components/react/Terminal.jsx";
 
 const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN;
 const GITHUB_USER = "HeriDev";
+const tokenValido = GITHUB_TOKEN && GITHUB_TOKEN !== "undefined" && GITHUB_TOKEN !== "";
 
-const headers = GITHUB_TOKEN
+const headers = tokenValido
   ? { Authorization: `Bearer ${GITHUB_TOKEN}` }
   : {};
 
 let repos = [];
+let errorGitHub = "";
 
 try {
   const res = await fetch(
@@ -23,9 +25,14 @@ try {
     repos = data
       .filter((repo) => repo.private === false && repo.fork === false)
       .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+    if (repos.length === 0) {
+      errorGitHub = "No hay repositorios públicos que mostrar.";
+    }
+  } else {
+    errorGitHub = `GitHub respondió con estado ${res.status}.`;
   }
 } catch (e) {
-  console.error("Error fetching GitHub repos:", e);
+  errorGitHub = "Error de red al consultar GitHub.";
 }
 
 const joyas = [
@@ -155,9 +162,9 @@ const javaProyectos = [
     </h2>
     <p class="mb-8 text-sm text-texto/50">
       Repositorios públicos sincronizados en build-time.
-      {!GITHUB_TOKEN && (
+      {!tokenValido && (
         <span class="block mt-2 text-yellow-400">
-          ⚠️ GITHUB_TOKEN no configurado. Con token obtienes mayor rate-limit.
+          ⚠️ GITHUB_TOKEN no configurado. Sin token el rate-limit es reducido.
         </span>
       )}
     </p>
@@ -174,9 +181,7 @@ const javaProyectos = [
       </div>
     ) : (
       <div class="rounded-lg border border-gris bg-gris/30 p-8 text-center">
-        <p class="text-texto/50">
-          No se pudieron cargar los repositorios. Verifica que GITHUB_TOKEN esté configurado y que el usuario exista.
-        </p>
+        <p class="text-texto/50">{errorGitHub || "No se pudieron cargar los repositorios."}</p>
       </div>
     )}
   </section>
