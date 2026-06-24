@@ -3,6 +3,7 @@ import LayoutCyberpunk from "../layouts/LayoutCyberpunk.astro";
 import CardProyecto from "../components/astro/CardProyecto.astro";
 import SplineViewer from "../components/react/SplineViewer.jsx";
 import Terminal from "../components/react/Terminal.jsx";
+import HeroParticles from "../components/react/HeroParticles.jsx";
 import { getRepos } from "../services/github";
 
 const repos = await getRepos();
@@ -56,20 +57,23 @@ const javaProyectos = [
 ---
 
 <LayoutCyberpunk title="HeriDev — Portfolio Cyberpunk" description="Desarrollador Web Full Stack · Astro · React · 3D">
-  <section id="inicio" class="mb-24">
-    <div class="grid items-center gap-12 md:grid-cols-2">
-      <div>
+  <section id="inicio" class="relative w-screen min-h-screen flex flex-col items-center justify-center overflow-hidden mb-24" style="left: 50%; transform: translateX(-50%);">
+    <div class="absolute top-0 left-0 z-0 w-full h-screen">
+      <HeroParticles client:only="react" />
+    </div>
+    <div class="relative z-10 w-full max-w-6xl mx-auto pt-24 px-4">
+      <div class="w-full">
         <p class="mb-2 text-sm tracking-widest text-cian uppercase">Hola, soy</p>
-        <h1 class="mb-4 text-4xl font-bold text-white md:text-5xl">
-          Ismael Mateo<br />
-          <span class="bg-gradient-to-r from-cian to-morado bg-clip-text text-transparent">
-            Díaz Gutiérrez
-          </span>
+        <h1 class="tw tw-hero mb-1 text-5xl font-bold text-cian md:text-7xl">
+          HeriDev
         </h1>
-        <p class="mb-6 text-lg text-texto/70">
+        <h2 class="tw tw-name mb-4 text-4xl font-bold text-white md:text-5xl">
+          Ismael Mateo <span class="bg-gradient-to-r from-cian to-morado bg-clip-text text-transparent">Díaz Gutiérrez</span>
+        </h2>
+        <p class="tw tw-tagline mb-6 text-lg text-texto/70">
           <span class="text-cian">&gt;</span> Ingeniero de Software &amp; Arquitecto de Interfaces
         </p>
-        <p class="mb-8 text-sm text-texto/50 leading-relaxed">
+        <p class="tw tw-desc mb-8 max-w-xl text-sm text-texto/50 leading-relaxed">
           Técnico en Sistemas Microinformáticos y Redes · Estudiante de DAW · 
           Certificado Oracle Java y Oracle SQL · Especializado en Astro, React y arquitecturas Serverless.
         </p>
@@ -90,9 +94,6 @@ const javaProyectos = [
           </a>
         </div>
       </div>
-      <div class="hidden md:block">
-        <SplineViewer client:visible scene="https://prod.spline.design/your-scene-id/scene.splinecode" />
-      </div>
     </div>
   </section>
 
@@ -107,7 +108,7 @@ const javaProyectos = [
     <h2 class="mb-2 text-2xl font-semibold text-white">
       <span class="text-cian">#</span> Las Joyas de la Corona
     </h2>
-    <p class="mb-8 text-sm text-texto/50">
+    <p class="tw tw-s-joyas mb-8 text-sm text-texto/50">
       Proyectos estrella que definen mi stack y filosofía de desarrollo.
     </p>
     <div class="grid gap-6 md:grid-cols-3">
@@ -121,7 +122,7 @@ const javaProyectos = [
     <h2 class="mb-2 text-2xl font-semibold text-white">
       <span class="text-cian">#</span> Proyectos Java
     </h2>
-    <p class="mb-8 text-sm text-texto/50">
+    <p class="tw tw-s-java mb-8 text-sm text-texto/50">
       Lógica backend robusta y validación de certificaciones Oracle.
     </p>
     <div class="grid gap-6 md:grid-cols-2">
@@ -135,7 +136,7 @@ const javaProyectos = [
     <h2 class="mb-2 text-2xl font-semibold text-white">
       <span class="text-cian">#</span> Nodos de GitHub
     </h2>
-    <p class="mb-8 text-sm text-texto/50">
+    <p class="tw tw-s-github mb-8 text-sm text-texto/50">
       Repositorios públicos sincronizados en build-time.
       {!tokenValido && (
         <span class="block mt-2 text-yellow-400">
@@ -165,7 +166,7 @@ const javaProyectos = [
     <h2 class="mb-2 text-2xl font-semibold text-white">
       <span class="text-cian">#</span> Contacto
     </h2>
-    <p class="mb-8 text-sm text-texto/50">
+    <p class="tw tw-s-contacto mb-8 text-sm text-texto/50">
       ¿Hablamos?
     </p>
     <div class="flex flex-wrap gap-4">

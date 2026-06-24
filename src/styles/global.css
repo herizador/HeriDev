@@ -11,6 +11,93 @@
   100% { opacity: 1; }
 }
 
+@keyframes typewriter {
+  from { max-width: 0; border-color: #00f3ff; }
+  to { max-width: 100%; border-color: transparent; }
+}
+
+@keyframes typewrite-paragraph {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes blink-cursor {
+  0%, 30% { border-color: #00f3ff; }
+  30%, 100% { border-color: transparent; }
+}
+
+.tw {
+  display: block;
+  width: fit-content;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 0;
+  border-right: 2px solid transparent;
+}
+
+.tw-hero {
+  animation:
+    typewriter 0.4s steps(7) 0s forwards,
+    blink-cursor 0.8s step-end 0s 1;
+}
+
+.tw-name {
+  animation:
+    typewriter 1.5s steps(28) 0.4s forwards,
+    blink-cursor 0.8s step-end 0.4s 2;
+}
+
+.tw-tagline {
+  animation:
+    typewriter 1.5s steps(48) 1.9s forwards,
+    blink-cursor 0.8s step-end 1.9s 2;
+}
+
+.tw-desc {
+  width: 100%;
+  max-width: none;
+  white-space: normal;
+  border-right: none;
+  clip-path: inset(0 100% 0 0);
+  animation:
+    typewrite-paragraph 2.5s steps(164) 3.4s forwards;
+}
+
+.tw-s-joyas {
+  animation:
+    typewriter 1.5s steps(60) 0s forwards,
+    blink-cursor 0.8s step-end 0s infinite;
+  animation-play-state: paused;
+}
+
+.tw-s-java {
+  animation:
+    typewriter 1.5s steps(57) 0s forwards,
+    blink-cursor 0.8s step-end 0s infinite;
+  animation-play-state: paused;
+}
+
+.tw-s-github {
+  animation:
+    typewriter 1.5s steps(48) 0s forwards,
+    blink-cursor 0.8s step-end 0s infinite;
+  animation-play-state: paused;
+}
+
+.tw-s-contacto {
+  animation:
+    typewriter 0.4s steps(10) 0s forwards,
+    blink-cursor 0.8s step-end 0s infinite;
+  animation-play-state: paused;
+}
+
+.tw-s-joyas.play,
+.tw-s-java.play,
+.tw-s-github.play,
+.tw-s-contacto.play {
+  animation-play-state: running;
+}
+
 #scanline {
   position: fixed;
   top: 0;
@@ -27,6 +114,10 @@
   0% { transform: translateY(-100%); }
   100% { transform: translateY(100vh); }
 }
+html {
+  overflow-x: hidden;
+}
+
 body {
   background-color: #05050a;
   color: #e0e0e0;
