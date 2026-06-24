@@ -2,8 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-.animate-scanline::after {
-  content: "";
+@keyframes typing {
+  to { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes blink {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+#scanline {
   position: fixed;
   top: 0;
   left: 0;
@@ -15,17 +23,10 @@
   z-index: 9999;
 }
 
-@keyframes typing {
-  to { clip-path: inset(0 0 0 0); }
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
 }
-
-@keyframes blink {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-
-
 body {
   background-color: #05050a;
   color: #e0e0e0;
