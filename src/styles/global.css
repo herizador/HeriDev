@@ -125,12 +125,12 @@ html {
 
 @media (max-width: 640px) {
   .tw {
-    max-width: 100%;
     white-space: normal;
     overflow: visible;
+    max-width: none;
     border-right: none;
-    clip-path: none;
-    width: auto;
+    width: 100%;
+    clip-path: inset(0 100% 0 0);
   }
   .tw-hero {
     width: fit-content;
@@ -141,61 +141,45 @@ html {
       typewriter 0.4s steps(7) 0s forwards,
       blink-cursor 0.8s step-end 0s 1;
   }
-  .tw-name,
-  .tw-tagline {
-    white-space: nowrap;
-    overflow: hidden;
-    border-right: 2px solid transparent;
-    width: fit-content;
-    clip-path: none;
-  }
   .tw-name {
+    clip-path: inset(0 100% 0 0);
     animation:
-      typewriter 1.5s steps(28) 0.4s forwards,
-      blink-cursor 0.8s step-end 0.4s 2;
+      typewrite-paragraph 1.5s steps(28) 0.4s forwards;
   }
   .tw-tagline {
+    clip-path: inset(0 100% 0 0);
     animation:
-      typewriter 1.5s steps(48) 1.9s forwards,
-      blink-cursor 0.8s step-end 1.9s 2;
+      typewrite-paragraph 1.5s steps(48) 1.9s forwards;
   }
   .tw-desc {
-    width: 100%;
     clip-path: inset(0 100% 0 0);
   }
   .tw-s-joyas,
   .tw-s-java,
   .tw-s-github,
   .tw-s-contacto {
-    width: fit-content;
-    white-space: nowrap;
-    overflow: hidden;
-    max-width: 0;
-    border-right: 2px solid transparent;
-    clip-path: none;
+    border-right: none;
+    clip-path: inset(0 100% 0 0);
+    width: 100%;
   }
   .tw-s-joyas {
     animation:
-      typewriter 1.5s steps(60) 0s forwards,
-      blink-cursor 0.8s step-end 0s infinite;
+      typewrite-paragraph 1.5s steps(60) 0s forwards;
     animation-play-state: paused;
   }
   .tw-s-java {
     animation:
-      typewriter 1.5s steps(57) 0s forwards,
-      blink-cursor 0.8s step-end 0s infinite;
+      typewrite-paragraph 1.5s steps(57) 0s forwards;
     animation-play-state: paused;
   }
   .tw-s-github {
     animation:
-      typewriter 1.5s steps(48) 0s forwards,
-      blink-cursor 0.8s step-end 0s infinite;
+      typewrite-paragraph 1.5s steps(48) 0s forwards;
     animation-play-state: paused;
   }
   .tw-s-contacto {
     animation:
-      typewriter 0.4s steps(10) 0s forwards,
-      blink-cursor 0.8s step-end 0s infinite;
+      typewrite-paragraph 0.4s steps(10) 0s forwards;
     animation-play-state: paused;
   }
   .tw-s-joyas.play,
