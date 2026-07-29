@@ -54,7 +54,7 @@
 
 .tw-tagline {
   animation:
-    typewriter 1.5s steps(48) 1.9s forwards,
+    typewriter 1.5s steps(47) 1.9s forwards,
     blink-cursor 0.8s step-end 1.9s 2;
 }
 
@@ -149,7 +149,7 @@ html {
   .tw-tagline {
     clip-path: inset(0 100% 0 0);
     animation:
-      typewrite-paragraph 1.5s steps(48) 1.9s forwards;
+      typewrite-paragraph 1.5s steps(47) 1.9s forwards;
   }
   .tw-desc {
     clip-path: inset(0 100% 0 0);

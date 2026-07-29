@@ -6,7 +6,7 @@ const LINES = [
   "> Nombre: Ismael Mateo Díaz Gutiérrez",
   "> Alias: HeriDev",
   "> Ubicación: Zaragoza, España",
-  "> Stack: Astro · React · Tailwind · Node.js",
+  "> Stack: Render · Supabase · Vercel · R2",
   "> Certificaciones: Oracle Java · Oracle SQL",
   ">",
   "> heridev@portfolio:~$ ./build --prod",
