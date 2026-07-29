@@ -65,7 +65,7 @@
   border-right: none;
   clip-path: inset(0 100% 0 0);
   animation:
-    typewrite-paragraph 2.5s steps(164) 3.4s forwards;
+    typewrite-paragraph 2.5s steps(158) 3.4s forwards;
 }
 
 .tw-s-joyas {
