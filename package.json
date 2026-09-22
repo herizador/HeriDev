@@ -21,6 +21,7 @@
     "@tsparticles/react": "^4.2.1",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
+    "@vercel/analytics": "^1.6.1",
     "astro": "^5.18.2",
     "postcss": "^8.5.15",
     "react": "^19.2.7",
