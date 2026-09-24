@@ -1,0 +1,218 @@
+---
+import LayoutCyberpunk from "../layouts/LayoutCyberpunk.astro";
+import CardProyecto from "../components/astro/CardProyecto.astro";
+import SplineViewer from "../components/react/SplineViewer.jsx";
+import Terminal from "../components/react/Terminal.jsx";
+import HeroParticles from "../components/react/HeroParticles.jsx";
+import { getRepos } from "../services/github";
+
+const repos = await getRepos();
+const tokenValido = import.meta.env.GITHUB_TOKEN &&
+  import.meta.env.GITHUB_TOKEN !== "undefined" &&
+  import.meta.env.GITHUB_TOKEN !== "";
+
+const joyas = [
+  {
+    titulo: "Gestor Familiar",
+    descripcion: "Cloud de almacenamiento de objetos con Cloudflare R2, base de datos e historial con Supabase, y gestión de usuarios de forma segura. Desarrollado con asistencia de IA.",
+    tags: ["Cloudflare R2", "Supabase", "React", "Node.js"],
+    icono: "🏠",
+    href: "https://github.com/herizador/Proyecto-Gestor-Archivos",
+    destacado: true,
+  },
+  {
+    titulo: "AudioShare",
+    descripcion: "Aplicación avanzada para compartir media y archivos de audio con streaming en tiempo real. Desarrollado con asistencia de IA.",
+    tags: ["Audio", "Streaming", "React", "WebSockets"],
+    icono: "🎵",
+    href: "https://github.com/herizador/AudioShare",
+    destacado: true,
+  },
+  {
+    titulo: "KidLink",
+    descripcion: "Software enfocado en seguridad, educación y comunicación en entornos infantiles. Desarrollado con asistencia de IA.",
+    tags: ["Seguridad", "Educación", "Comunicación"],
+    icono: "🔒",
+    href: "https://github.com/herizador/kidlink",
+    destacado: true,
+  },
+];
+
+const javaProyectos = [
+  {
+    titulo: "Proyecto Empresa",
+    descripcion: "Sistema de gestión empresarial desarrollado en Java. Demuestra POO, patrones de diseño y lógica backend robusta.",
+    tags: ["Java", "POO", "Oracle SQL"],
+    icono: "☕",
+    href: "https://github.com/herizador/Proyecto_Empresa",
+  },
+  {
+    titulo: "Proyecto Biblioteca",
+    descripcion: "Aplicación de gestión bibliotecaria que valida certificación Oracle Java y Oracle SQL.",
+    tags: ["Java", "Oracle SQL", "CRUD"],
+    icono: "📚",
+    href: "https://github.com/achrafestudios-lab/Proyecto_Biblioteca",
+  },
+];
+---
+
+<LayoutCyberpunk
+  title="HeriDev — Desarrollador Web Full Stack en Zaragoza | Astro, React, Java"
+  description="Portfolio de Ismael Mateo Díaz Gutiérrez (HeriDev), desarrollador web full-stack y técnico informático en Zaragoza: proyectos con Astro, React, Java certificado por Oracle, Supabase y Cloudflare R2."
+  canonical="https://heri-dev.es/"
+>
+  <section id="inicio" class="relative w-screen min-h-screen flex flex-col items-center justify-center overflow-hidden mb-24" style="left: 50%; transform: translateX(-50%);">
+    <div class="absolute top-0 left-0 z-0 w-full h-screen">
+      <HeroParticles client:only="react" />
+    </div>
+    <div class="relative z-10 w-full max-w-6xl mx-auto pt-24 px-4">
+      <div class="w-full">
+        <p class="mb-2 text-sm tracking-widest text-cian uppercase">Hola, soy</p>
+        <h1 class="tw tw-hero mb-1 text-5xl font-bold text-cian md:text-7xl">
+          HeriDev
+        </h1>
+        <h2 class="tw tw-name mb-4 text-4xl font-bold text-white md:text-5xl">
+          Ismael Mateo <span class="bg-gradient-to-r from-cian to-morado bg-clip-text text-transparent">Díaz Gutiérrez</span>
+        </h2>
+        <p class="tw tw-tagline mb-6 text-lg text-texto/70">
+          <span class="text-cian">&gt;</span> Próximo Desarrollador Web y Técnico Informático
+        </p>
+        <p class="tw tw-desc mb-8 max-w-xl text-sm text-texto/50 leading-relaxed">
+          Técnico en Sistemas Microinformáticos y Redes · Estudiante de DAW · 
+           Certificado Oracle Java y Oracle SQL · Render · Supabase · GitHub · Vercel · Cloudflare R2
+        </p>
+        <div class="flex gap-4">
+          <a
+            href="#joyas"
+            class="rounded border border-cian bg-cian/10 px-6 py-2 text-sm font-medium text-cian tracking-wider transition-all hover:bg-cian hover:text-fondo"
+          >
+            Ver proyectos
+          </a>
+          <a
+            href="https://github.com/herizador"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="rounded border border-morado bg-morado/10 px-6 py-2 text-sm font-medium text-morado tracking-wider transition-all hover:bg-morado hover:text-white"
+          >
+            GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="terminal" class="mb-24">
+    <h2 class="mb-8 text-2xl font-semibold text-white">
+      <span class="text-cian">$</span> Terminal
+    </h2>
+    <Terminal client:visible />
+  </section>
+
+  <section id="sobre-mi" class="mb-24">
+    <h2 class="mb-2 text-2xl font-semibold text-white">
+      <span class="text-cian">#</span> Sobre mí
+    </h2>
+    <p class="tw tw-s-sobremi mb-4 text-sm text-texto/70 leading-relaxed">
+      Soy Ismael Mateo Díaz Gutiérrez (HeriDev), técnico informático en Zaragoza y estudiante de
+      Desarrollo de Aplicaciones Web en CPIFP Los Enlaces. Me formé en Sistemas Microinformáticos
+      y Redes en el I.E.S. Santiago Hernández y he trabajado como técnico informático en Pikolin
+      y CSIF: mantenimiento de equipos e impresoras, instalación de software empresarial, gestión
+      de usuarios de red y soporte remoto a sucursales y tiendas.
+    </p>
+    <p class="mb-4 text-sm text-texto/70 leading-relaxed">
+      Hoy construyo aplicaciones web modernas con Astro, React y Java, con certificaciones de
+      Oracle Academy en Java Foundations y Database Programming with SQL, además de Cisco
+      Networking Basics. En mis proyectos uso Supabase, Cloudflare R2, Vercel y Render, y aplico
+      IA generativa en mis flujos de trabajo. También soy voluntario como monitor de ocio y
+      tiempo libre, donde dinamizo actividades socioeducativas para infancia y juventud.
+    </p>
+  </section>
+
+  <section id="joyas" class="mb-24">
+    <h2 class="mb-2 text-2xl font-semibold text-white">
+      <span class="text-cian">#</span> Las Joyas de la Corona
+    </h2>
+    <p class="tw tw-s-joyas mb-8 text-sm text-texto/50">
+      Proyectos estrella que definen mi stack y filosofía de desarrollo.
+    </p>
+    <div class="grid gap-6 md:grid-cols-3">
+      {joyas.map((proyecto) => (
+        <CardProyecto {...proyecto} />
+      ))}
+    </div>
+  </section>
+
+  <section id="java" class="mb-24">
+    <h2 class="mb-2 text-2xl font-semibold text-white">
+      <span class="text-cian">#</span> Proyectos Java
+    </h2>
+    <p class="tw tw-s-java mb-8 text-sm text-texto/50">
+      Lógica backend robusta y validación de certificaciones Oracle.
+    </p>
+    <div class="grid gap-6 md:grid-cols-2">
+      {javaProyectos.map((proyecto) => (
+        <CardProyecto {...proyecto} />
+      ))}
+    </div>
+  </section>
+
+  <section id="github" class="mb-24">
+    <h2 class="mb-2 text-2xl font-semibold text-white">
+      <span class="text-cian">#</span> Nodos de GitHub
+    </h2>
+    <p class="tw tw-s-github mb-8 text-sm text-texto/50">
+      Repositorios públicos sincronizados en build-time.
+      {!tokenValido && (
+        <span class="block mt-2 text-yellow-400">
+          ⚠️ GITHUB_TOKEN no configurado. Sin token el rate-limit es reducido.
+        </span>
+      )}
+    </p>
+    {repos.length > 0 ? (
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {repos.slice(0, 12).map((repo) => (
+          <CardProyecto
+            titulo={repo.name}
+            descripcion={repo.description || "Sin descripción"}
+            tags={[repo.language || "Varios", `${repo.stargazers_count} ★`]}
+            href={repo.html_url}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="rounded-lg border border-gris bg-gris/30 p-8 text-center">
+        <p class="text-texto/50">No hay repositorios públicos para mostrar.</p>
+      </div>
+    )}
+  </section>
+
+  <section id="contacto">
+    <h2 class="mb-2 text-2xl font-semibold text-white">
+      <span class="text-cian">#</span> Contacto
+    </h2>
+    <p class="tw tw-s-contacto mb-8 text-sm text-texto/50">
+      ¿Hablamos?
+    </p>
+    <div class="flex flex-wrap gap-4">
+      <a
+        href="https://github.com/herizador"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="rounded border border-gris px-4 py-2 text-sm text-texto/70 transition-all hover:border-cian hover:text-cian"
+      >
+        GitHub
+      </a>
+      <a
+        href="https://www.linkedin.com/in/ismael-d%C3%ADaz-24072627a"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="rounded border border-gris px-4 py-2 text-sm text-texto/70 transition-all hover:border-cian hover:text-cian"
+      >
+        LinkedIn
+      </a>
+      <span class="rounded border border-gris px-4 py-2 text-sm text-texto/50">
+        heridev@proton.me
+      </span>
+    </div>
+  </section>
+</LayoutCyberpunk>

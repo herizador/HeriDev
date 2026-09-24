@@ -1,0 +1,48 @@
+---
+export interface Props {
+  titulo: string;
+  descripcion: string;
+  tags: string[];
+  icono?: string;
+  href?: string;
+  destacado?: boolean;
+}
+
+const { titulo, descripcion, tags, icono, href, destacado = false } = Astro.props;
+---
+
+<article
+  class={`group relative overflow-hidden rounded-lg border p-6 transition-all duration-300 hover:shadow-lg ${
+    destacado
+      ? "border-cian/50 bg-gris/80 hover:border-cian hover:shadow-cian/20"
+      : "border-gris bg-fondo/60 hover:border-morado hover:shadow-morado/20"
+  }`}
+>
+  {icono && <div class="mb-4 text-3xl">{icono}</div>}
+  <h3 class="mb-2 text-xl font-semibold text-white group-hover:text-cian transition-colors">
+    {titulo}
+  </h3>
+  <p class="mb-4 text-sm text-texto/70 leading-relaxed">{descripcion}</p>
+  <div class="flex flex-wrap gap-2">
+    {tags.map((tag) => (
+      <span
+        class={`rounded-full px-3 py-1 text-xs font-medium tracking-wider ${
+          destacado
+            ? "bg-cian/10 text-cian border border-cian/30"
+            : "bg-morado/10 text-morado border border-morado/30"
+        }`}
+      >
+        {tag}
+      </span>
+    ))}
+  </div>
+  {href && (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="absolute inset-0"
+      aria-label={`Ver proyecto ${titulo}`}
+    />
+  )}
+</article>

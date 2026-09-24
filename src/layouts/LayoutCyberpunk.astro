@@ -1,0 +1,115 @@
+---
+import "../styles/global.css";
+import Navbar from "../components/astro/Navbar.astro";
+
+export interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+}
+
+const SITE_URL = "https://heri-dev.es";
+
+const {
+  title = "HeriDev — Desarrollador Web Full Stack | Astro, React, Java",
+  description = "Portfolio de Ismael Mateo Díaz Gutiérrez (HeriDev), desarrollador web full-stack y técnico informático en Zaragoza: Astro, React, Java con certificación Oracle, Supabase y Cloudflare R2.",
+  canonical = `${SITE_URL}/`,
+} = Astro.props;
+
+const ogImage = `${SITE_URL}/og-cover.jpg`;
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Ismael Mateo Díaz Gutiérrez",
+  alternateName: "HeriDev",
+  url: SITE_URL,
+  jobTitle: "Desarrollador Web Full Stack",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Zaragoza",
+    addressCountry: "ES",
+  },
+  sameAs: [
+    "https://github.com/herizador",
+    "https://www.linkedin.com/in/ismael-d%C3%ADaz-24072627a",
+  ],
+  knowsAbout: ["Astro", "React", "Java", "Oracle SQL", "Supabase", "Cloudflare R2", "Vercel", "Render"],
+};
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta
+      name="keywords"
+      content="HeriDev, Ismael Díaz Gutiérrez, desarrollador web Zaragoza, portfolio desarrollador, Astro, React, Java, Oracle SQL, Supabase, Cloudflare R2, técnico informático, DAW"
+    />
+    <meta name="author" content="Ismael Mateo Díaz Gutiérrez" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#00f3ff" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content="HeriDev" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="HeriDev — Portfolio de Ismael Mateo Díaz Gutiérrez" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+  </head>
+  <body class="min-h-screen bg-fondo font-mono text-texto antialiased">
+    <div id="scanline" aria-hidden="true" />
+    <Navbar />
+    <main class="mx-auto max-w-6xl px-4 pb-16">
+      <slot />
+    </main>
+    <script>
+      (function() {
+        if (typeof IntersectionObserver === 'undefined') return;
+        var els = document.querySelectorAll('[class*="tw-s-"]');
+        if (!els.length) return;
+        var show = function(el) { el.classList.add('play'); };
+        var obs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              show(entry.target);
+              obs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0, rootMargin: "80px" });
+        els.forEach(function(el) {
+          if (el.getBoundingClientRect().top < window.innerHeight + 80) {
+            show(el);
+          } else {
+            obs.observe(el);
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
