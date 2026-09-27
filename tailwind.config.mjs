@@ -15,7 +15,7 @@ export default {
       animation: {
         glitch: "glitch 0.3s ease-in-out",
         "neon-pulse": "neon-pulse 2s ease-in-out infinite",
-        scanline: "scanline 8s linear infinite",
+        scanline: "scanline 16s linear infinite",
         typing: "typing 3s steps(40) forwards",
       },
       keyframes: {

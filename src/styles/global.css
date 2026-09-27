@@ -82,28 +82,28 @@
 .tw-s-joyas {
   animation:
     typewriter 1.5s steps(60) 0s forwards,
-    blink-cursor 0.8s step-end 0s infinite;
+    blink-cursor 0.8s step-end 0s 3;
   animation-play-state: paused;
 }
 
 .tw-s-java {
   animation:
     typewriter 1.5s steps(57) 0s forwards,
-    blink-cursor 0.8s step-end 0s infinite;
+    blink-cursor 0.8s step-end 0s 3;
   animation-play-state: paused;
 }
 
 .tw-s-github {
   animation:
     typewriter 1.5s steps(48) 0s forwards,
-    blink-cursor 0.8s step-end 0s infinite;
+    blink-cursor 0.8s step-end 0s 3;
   animation-play-state: paused;
 }
 
 .tw-s-contacto {
   animation:
     typewriter 0.4s steps(10) 0s forwards,
-    blink-cursor 0.8s step-end 0s infinite;
+    blink-cursor 0.8s step-end 0s 3;
   animation-play-state: paused;
 }
 
@@ -121,8 +121,8 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background: linear-gradient(to bottom, transparent, rgba(157, 0, 255, 0.1), transparent);
-  animation: scanline 8s linear infinite;
+  background: linear-gradient(to bottom, transparent, rgba(157, 0, 255, 0.04), transparent);
+  animation: scanline 16s linear infinite;
   pointer-events: none;
   z-index: 9999;
 }
@@ -231,4 +231,28 @@ body {
 ::-webkit-scrollbar-thumb {
   background: #9d00ff;
   border-radius: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tw,
+  .tw-hero,
+  .tw-name,
+  .tw-tagline,
+  .tw-desc,
+  .tw-s-sobremi,
+  .tw-s-joyas,
+  .tw-s-java,
+  .tw-s-github,
+  .tw-s-contacto {
+    animation: none;
+    clip-path: none;
+    max-width: none;
+    white-space: normal;
+    overflow: visible;
+    border-right: none;
+    width: 100%;
+  }
+  #scanline {
+    display: none;
+  }
 }
