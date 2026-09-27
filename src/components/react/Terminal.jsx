@@ -40,8 +40,8 @@ export default function Terminal() {
   }, []);
 
   return (
-    <div ref={ref} className="w-full rounded-lg border border-cian/20 bg-fondo/90 p-4 font-mono text-sm shadow-lg">
-      <div className="mb-2 flex items-center gap-2 border-b border-cian/10 pb-2">
+    <div ref={ref} className="w-full rounded-lg border border-morado/20 bg-fondo/90 p-4 font-mono text-sm shadow-lg">
+      <div className="mb-2 flex items-center gap-2 border-b border-morado/10 pb-2">
         <span className="h-3 w-3 rounded-full bg-red-500" />
         <span className="h-3 w-3 rounded-full bg-yellow-500" />
         <span className="h-3 w-3 rounded-full bg-green-500" />
@@ -54,7 +54,7 @@ export default function Terminal() {
               className="inline-block overflow-hidden whitespace-nowrap text-texto/80"
               style={line.replace(">", "").trim().length > 0 ? {
                 maxWidth: 0,
-                borderRight: "2px solid #00f3ff",
+                borderRight: "2px solid #9d00ff",
                 animation: visible
                   ? `tw-terminal ${line.length * SPEED}ms steps(${line.length}) ${i * DELAY}ms forwards`
                   : "none",

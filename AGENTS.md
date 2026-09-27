@@ -7,7 +7,7 @@ Portfolio estático Astro 5 (SEO-first). React solo para islas interactivas. Tod
 - `astro.config.mjs`: `output: "static"` + `site: "https://heri-dev.es"` + `adapter: vercel()` + `react()` + `tailwind()` + `sitemap()`. Todo estático salvo `src/pages/api/*` (serverless con `export const prerender = false`). Sitemap en build (`/sitemap-index.xml`, declarado en `public/robots.txt`).
 - Islas React 19: `HeroParticles client:only="react"`, `Terminal client:visible`. `SplineViewer.jsx` usa `React.lazy(() => import("@splinetool/react-spline"))` + `Suspense` — no importar Spline de forma eager. Ojo: `index.astro` lo importa pero actualmente no lo renderiza.
 - tsparticles carga modular en `HeroParticles.jsx` y **el orden importa**: `loadBasic` → `loadInteractivityPlugin` → `loadParticlesLinksInteraction` + `loadExternalAttractInteraction`. Reordenarlo rompe el build con `tsParticles Interactivity Plugin is not loaded` (ver `prompt.txt`, log local ignorado por git). No sustituir por bundle completo.
-- Tailwind 3: tokens `fondo #05050a`, `cian #00f3ff`, `morado #9d00ff`, `gris #1a1a2e`, `texto #e0e0e0`; fuente `Fira Code` (`font-mono`). `content` cubre `src/**/*.{astro,html,js,jsx,md,mdx}`.
+- Tailwind 3: tokens `fondo #05050a`, `morado #9d00ff`, `gris #1a1a2e`, `texto #e0e0e0` (solo negro + morado, sin celeste); fuente `Fira Code` (`font-mono`). `content` cubre `src/**/*.{astro,html,js,jsx,md,mdx}`.
 
 ## Estructura
 

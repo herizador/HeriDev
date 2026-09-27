@@ -5,7 +5,6 @@ export default {
     extend: {
       colors: {
         fondo: "#05050a",
-        cian: "#00f3ff",
         morado: "#9d00ff",
         gris: "#1a1a2e",
         texto: "#e0e0e0",

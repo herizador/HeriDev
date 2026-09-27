@@ -65,7 +65,7 @@ export default function HeroParticles() {
     fullScreen: { enable: false },
     particles: {
       number: { value: 90, density: { enable: true } },
-      color: { value: "#00f3ff" },
+      color: { value: "#9d00ff" },
       links: {
         color: "#9d00ff",
         distance: 160,
