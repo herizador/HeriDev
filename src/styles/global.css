@@ -99,7 +99,8 @@
 .tw-s-joyas.play,
 .tw-s-java.play,
 .tw-s-github.play,
-.tw-s-contacto.play {
+.tw-s-contacto.play,
+.tw-s-sobremi.play {
   animation-play-state: running;
 }
 
@@ -157,12 +158,29 @@ html {
   .tw-s-joyas,
   .tw-s-java,
   .tw-s-github,
-  .tw-s-contacto {
+  .tw-s-contacto,
+  .tw-s-sobremi {
     border-right: none;
     clip-path: inset(0 100% 0 0);
     width: 100%;
   }
-  .tw-s-joyas {
+  .tw-s-sobremi {
+    animation:
+      typewrite-paragraph 2s steps(120) 0s forwards;
+    animation-play-state: paused;
+  }
+.tw-s-sobremi {
+  width: 100%;
+  max-width: none;
+  white-space: normal;
+  border-right: none;
+  clip-path: inset(0 100% 0 0);
+  animation:
+    typewrite-paragraph 2s steps(120) 0s forwards;
+  animation-play-state: paused;
+}
+
+.tw-s-joyas {
     animation:
       typewrite-paragraph 1.5s steps(60) 0s forwards;
     animation-play-state: paused;
@@ -185,7 +203,8 @@ html {
   .tw-s-joyas.play,
   .tw-s-java.play,
   .tw-s-github.play,
-  .tw-s-contacto.play {
+  .tw-s-contacto.play,
+  .tw-s-sobremi.play {
     animation-play-state: running;
   }
 }
