@@ -234,24 +234,6 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tw,
-  .tw-hero,
-  .tw-name,
-  .tw-tagline,
-  .tw-desc,
-  .tw-s-sobremi,
-  .tw-s-joyas,
-  .tw-s-java,
-  .tw-s-github,
-  .tw-s-contacto {
-    animation: none;
-    clip-path: none;
-    max-width: none;
-    white-space: normal;
-    overflow: visible;
-    border-right: none;
-    width: 100%;
-  }
   #scanline {
     display: none;
   }
