@@ -34,6 +34,7 @@ const personSchema = {
     "https://github.com/herizador",
     "https://www.linkedin.com/in/ismael-d%C3%ADaz-24072627a",
   ],
+  telephone: "+34603177493",
   knowsAbout: ["Java", "Oracle SQL", "Astro", "React", "Supabase", "Cloudflare R2", "Vercel", "Render", "GitHub"],
 };
 ---
@@ -84,31 +85,78 @@ const personSchema = {
   </head>
   <body class="min-h-screen bg-fondo font-mono text-texto antialiased">
     <div id="scanline" aria-hidden="true" />
+    <div id="scroll-progress" aria-hidden="true" />
     <Navbar />
     <main class="mx-auto max-w-6xl px-4 pb-16">
       <slot />
     </main>
+    <footer class="border-t border-morado/20 py-8">
+      <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 text-xs text-texto/50 sm:flex-row">
+        <p>&copy; 2026 HeriDev &middot; Ismael Mateo D&iacute;az Guti&eacute;rrez &middot; Zaragoza</p>
+        <p>
+          <a href="#inicio" class="transition-colors hover:text-morado">Volver arriba</a>
+          <span class="mx-2 text-morado/40">/</span>
+          <a href="/cv.pdf" class="transition-colors hover:text-morado">Descargar CV</a>
+        </p>
+      </div>
+    </footer>
+    <button
+      id="to-top"
+      type="button"
+      aria-label="Volver arriba"
+      class="fixed bottom-6 right-6 z-50 hidden h-11 w-11 items-center justify-center rounded-full border border-morado/50 bg-fondo/90 text-morado shadow-[0_0_20px_rgba(157,0,255,0.35)] backdrop-blur transition-all hover:bg-morado hover:text-white"
+    >
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m5 12 7-7 7 7"></path><path d="M12 19V5"></path>
+      </svg>
+    </button>
     <script>
       (function() {
-        if (typeof IntersectionObserver === 'undefined') return;
-        var els = document.querySelectorAll('[class*="tw-s-"]');
-        if (!els.length) return;
-        var show = function(el) { el.classList.add('play'); };
-        var obs = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-              show(entry.target);
-              obs.unobserve(entry.target);
+        // Typewriter por secciones (contrato existente) + revelado suave para tarjetas
+        if (typeof IntersectionObserver !== 'undefined') {
+          var twEls = document.querySelectorAll('[class*="tw-s-"]');
+          var revealEls = document.querySelectorAll('.reveal');
+          var show = function(el) { el.classList.add('play'); };
+          var obs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                show(entry.target);
+                obs.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0, rootMargin: "80px" });
+          var watch = function(el) {
+            if (el.getBoundingClientRect().top < window.innerHeight + 80) {
+              show(el);
+            } else {
+              obs.observe(el);
             }
-          });
-        }, { threshold: 0, rootMargin: "80px" });
-        els.forEach(function(el) {
-          if (el.getBoundingClientRect().top < window.innerHeight + 80) {
-            show(el);
-          } else {
-            obs.observe(el);
+          };
+          twEls.forEach(watch);
+          revealEls.forEach(watch);
+        } else {
+          document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('play'); });
+        }
+        // Barra de progreso de lectura + botón volver arriba
+        var bar = document.getElementById('scroll-progress');
+        var toTop = document.getElementById('to-top');
+        function onScroll() {
+          var max = document.documentElement.scrollHeight - window.innerHeight;
+          var pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+          if (bar) bar.style.transform = 'scaleX(' + pct / 100 + ')';
+          if (toTop) {
+            var visible = window.scrollY > 600;
+            toTop.classList.toggle('hidden', !visible);
+            toTop.classList.toggle('flex', visible);
           }
-        });
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+        if (toTop) {
+          toTop.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        }
       })();
     </script>
   </body>

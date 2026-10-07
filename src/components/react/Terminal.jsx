@@ -11,7 +11,7 @@ const LINES = [
   ">",
   "> heridev@portfolio:~$ ./build --prod",
   "> Construyendo portafolio cyberpunk...",
-  "> Integrando ♥ 3D con Spline...",
+  "> Integrando escena 3D con Spline...",
   "> Conectando a API de GitHub...",
   "> Listo. Puerto 3000.",
 ];

@@ -2,18 +2,19 @@
 const links = [
   { href: "#inicio", label: "Inicio" },
   { href: "#sobre-mi", label: "Sobre mí" },
+  { href: "#curriculum", label: "CV" },
   { href: "#joyas", label: "Proyectos" },
   { href: "#github", label: "GitHub" },
   { href: "#contacto", label: "Contacto" },
 ];
 ---
 
-<nav class="fixed top-0 left-0 right-0 z-50 border-b border-morado/20 bg-fondo/80 backdrop-blur-md">
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 border-b border-morado/20 bg-fondo/80 backdrop-blur-md transition-all">
   <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-    <a href="/" class="font-bold text-lg tracking-wider text-morado hover:text-white transition-colors">
+    <a href="#inicio" class="font-bold text-lg tracking-wider text-morado hover:text-white transition-colors">
       &lt;HeriDev /&gt;
     </a>
-    <button id="menu-toggle" class="flex flex-col gap-1.5 md:hidden" aria-label="Menú">
+    <button id="menu-toggle" class="flex flex-col gap-1.5 md:hidden" aria-label="Abrir menú" aria-expanded="false">
       <span class="block h-0.5 w-6 bg-morado transition-all" />
       <span class="block h-0.5 w-6 bg-morado transition-all" />
       <span class="block h-0.5 w-6 bg-morado transition-all" />
@@ -23,6 +24,7 @@ const links = [
         <li>
           <a
             href={link.href}
+            data-navlink
             class="relative text-sm uppercase tracking-wider text-texto/70 hover:text-morado transition-colors after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:bg-morado after:transition-all hover:after:w-full"
           >
             {link.label}
@@ -35,6 +37,7 @@ const links = [
     {links.map((link) => (
       <a
         href={link.href}
+        data-navlink
         class="block py-2 text-sm uppercase tracking-wider text-texto/70 hover:text-morado transition-colors"
       >
         {link.label}
@@ -47,16 +50,61 @@ const links = [
   (function() {
     var toggle = document.getElementById("menu-toggle");
     var overlay = document.getElementById("menu-overlay");
-    if (!toggle || !overlay) return;
-    toggle.addEventListener("click", function() {
-      overlay.classList.toggle("hidden");
-      overlay.classList.toggle("flex");
-    });
-    overlay.querySelectorAll("a").forEach(function(a) {
-      a.addEventListener("click", function() {
-        overlay.classList.add("hidden");
-        overlay.classList.remove("flex");
+    var navbar = document.getElementById("navbar");
+    if (toggle && overlay) {
+      toggle.addEventListener("click", function() {
+        var isHidden = overlay.classList.toggle("hidden");
+        overlay.classList.toggle("flex", !isHidden);
+        toggle.setAttribute("aria-expanded", String(!isHidden));
       });
-    });
+      overlay.querySelectorAll("a").forEach(function(a) {
+        a.addEventListener("click", function() {
+          overlay.classList.add("hidden");
+          overlay.classList.remove("flex");
+          toggle.setAttribute("aria-expanded", "false");
+        });
+      });
+    }
+    // Intensifica el fondo al hacer scroll
+    function onScroll() {
+      if (!navbar) return;
+      if (window.scrollY > 24) {
+        navbar.classList.add("bg-fondo/95", "shadow-[0_4px_24px_-8px_rgba(157,0,255,0.35)]");
+      } else {
+        navbar.classList.remove("bg-fondo/95", "shadow-[0_4px_24px_-8px_rgba(157,0,255,0.35)]");
+      }
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    // Scrollspy: resalta el enlace de la sección visible
+    var navLinks = Array.prototype.slice.call(document.querySelectorAll("[data-navlink]"));
+    var sections = navLinks
+      .map(function(a) {
+        var id = a.getAttribute("href");
+        return id && id.charAt(0) === "#" ? document.querySelector(id) : null;
+      })
+      .filter(Boolean);
+    if ("IntersectionObserver" in window && sections.length) {
+      var active = null;
+      var spy = new IntersectionObserver(
+        function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) active = "#" + entry.target.id;
+          });
+          navLinks.forEach(function(a) {
+            var isActive = a.getAttribute("href") === active;
+            a.classList.toggle("text-morado", isActive);
+            a.classList.toggle("after:w-full", isActive);
+            if (isActive) {
+              a.setAttribute("aria-current", "true");
+            } else {
+              a.removeAttribute("aria-current");
+            }
+          });
+        },
+        { rootMargin: "-40% 0px -55% 0px" }
+      );
+      sections.forEach(function(s) { spy.observe(s); });
+    }
   })();
 </script>

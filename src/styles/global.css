@@ -100,6 +100,13 @@
   animation-play-state: paused;
 }
 
+.tw-s-curriculum {
+  animation:
+    typewriter 1.5s steps(52) 0s forwards,
+    blink-cursor 0.8s step-end 0s 3;
+  animation-play-state: paused;
+}
+
 .tw-s-contacto {
   animation:
     typewriter 0.4s steps(10) 0s forwards,
@@ -110,6 +117,7 @@
 .tw-s-joyas.play,
 .tw-s-java.play,
 .tw-s-github.play,
+.tw-s-curriculum.play,
 .tw-s-contacto.play,
 .tw-s-sobremi.play {
   animation-play-state: running;
@@ -196,6 +204,11 @@ html {
       typewrite-paragraph 1.5s steps(48) 0s forwards;
     animation-play-state: paused;
   }
+  .tw-s-curriculum {
+    animation:
+      typewrite-paragraph 1.5s steps(52) 0s forwards;
+    animation-play-state: paused;
+  }
   .tw-s-contacto {
     animation:
       typewrite-paragraph 0.4s steps(10) 0s forwards;
@@ -204,6 +217,7 @@ html {
   .tw-s-joyas.play,
   .tw-s-java.play,
   .tw-s-github.play,
+  .tw-s-curriculum.play,
   .tw-s-contacto.play,
   .tw-s-sobremi.play {
     animation-play-state: running;
@@ -237,4 +251,89 @@ body {
   #scanline {
     display: none;
   }
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---- Navegación por anclas: desplazamiento animado y compensación del navbar fijo ---- */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+
+section[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+/* Destello sutil al llegar a una sección mediante un ancla */
+section[id]:target {
+  animation: section-flash 1.6s ease-out;
+}
+
+@keyframes section-flash {
+  0% { filter: drop-shadow(0 0 14px rgba(157, 0, 255, 0.55)); }
+  100% { filter: none; }
+}
+
+/* ---- Revelado suave para tarjetas (convive con el typewriter .tw-s-*) ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.play {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- Resaltado de palabras clave ---- */
+.kw {
+  color: #ffffff;
+  font-weight: 600;
+  background: rgba(157, 0, 255, 0.14);
+  border-bottom: 1px solid rgba(157, 0, 255, 0.55);
+  border-radius: 0.25rem;
+  padding: 0 0.3rem;
+  white-space: nowrap;
+}
+
+/* ---- Barra de progreso de lectura ---- */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(to right, #9d00ff, rgba(157, 0, 255, 0.35));
+  transform-origin: left;
+  transform: scaleX(0);
+  pointer-events: none;
+}
+
+/* ---- Vista previa del CV (miniatura de documento) ---- */
+.cv-paper {
+  background: #f4f1f7;
+  color: #23232e;
+  aspect-ratio: 1 / 1.28;
+}
+
+.cv-paper-bar {
+  background: rgba(109, 40, 140, 0.16);
+  border-radius: 2px;
+}
+
+/* ---- Accesibilidad: foco visible ---- */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid #9d00ff;
+  outline-offset: 3px;
+  border-radius: 4px;
 }
