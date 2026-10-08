@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 import Particles, { ParticlesProvider } from "@tsparticles/react";
 import { loadBasic } from "@tsparticles/basic";
 import { loadInteractivityPlugin } from "@tsparticles/plugin-interactivity";
@@ -6,89 +6,42 @@ import { loadParticlesLinksInteraction } from "@tsparticles/interaction-particle
 import { loadExternalAttractInteraction } from "@tsparticles/interaction-external-attract";
 
 export default function HeroParticles() {
-  const containerRef = useRef(null);
-
-  const particlesLoaded = useCallback(async (container) => {
-    containerRef.current = container;
-  }, []);
-
   const initEngine = useCallback(async (engine) => {
+    // El orden importa: basic -> interactivity -> links + attract.
+    // Reordenarlo rompe el build (tsParticles Interactivity Plugin is not loaded).
     await loadBasic(engine);
     await loadInteractivityPlugin(engine);
     await loadParticlesLinksInteraction(engine);
     await loadExternalAttractInteraction(engine);
   }, []);
 
-  useEffect(() => {
-    const idle = { x: 0, y: 0, time: Date.now() };
-    let lastExplosion = 0;
-    let canvasRect = null;
-
-    const getCanvasRect = () => {
-      const c = containerRef.current;
-      if (!c) return null;
-      return c.canvas.element?.getBoundingClientRect() ?? null;
-    };
-
-    const interval = setInterval(() => {
-      if (Date.now() - idle.time > 2500 && Date.now() - lastExplosion > 3500) {
-        lastExplosion = Date.now();
-        const c = containerRef.current;
-        if (!c || !c.particles) return;
-        canvasRect = getCanvasRect();
-        if (!canvasRect) return;
-        const strength = 30 + Math.random() * 40;
-        c.particles.forEach((p) => {
-          const dx = p.position.x + canvasRect.left - idle.x;
-          const dy = p.position.y + canvasRect.top - idle.y;
-          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          p.velocity.x += (dx / dist) * strength * (0.7 + Math.random() * 0.6);
-          p.velocity.y += (dy / dist) * strength * (0.7 + Math.random() * 0.6);
-        });
-      }
-    }, 200);
-
-    const onMouseMove = (e) => {
-      idle.x = e.clientX;
-      idle.y = e.clientY;
-      idle.time = Date.now();
-    };
-    document.addEventListener("mousemove", onMouseMove);
-    return () => {
-      clearInterval(interval);
-      document.removeEventListener("mousemove", onMouseMove);
-    };
-  }, []);
-
   const options = useMemo(() => ({
     fpsLimit: 60,
     fullScreen: { enable: false },
     particles: {
-      number: { value: 90, density: { enable: true } },
-      color: { value: "#9d00ff" },
-      links: {
-        color: "#9d00ff",
-        distance: 160,
-        enable: true,
-        opacity: 0.35,
-        width: 1.2,
-      },
+      number: { value: 70, density: { enable: true, area: 900 } },
+      color: { value: ["#9d00ff", "#c07bff", "#7a2bd6"] },
+      links: { enable: false },
       move: {
         enable: true,
-        speed: 1.2,
-        outModes: { default: "bounce" },
+        speed: 0.35,
+        direction: "none",
+        outModes: { default: "out" },
       },
       size: {
-        value: { min: 1.5, max: 3.5 },
+        value: { min: 1, max: 2.4 },
       },
-      opacity: { value: 0.9 },
+      opacity: {
+        value: { min: 0.25, max: 0.6 },
+        animation: { enable: true, speed: 0.6, sync: false },
+      },
     },
     interactivity: {
       events: {
         onHover: { enable: true, mode: "attract" },
       },
       modes: {
-        attract: { distance: 250, duration: 0.3, speed: 6 },
+        attract: { distance: 140, duration: 0.4, speed: 0.8 },
       },
     },
     detectRetina: true,
@@ -100,7 +53,6 @@ export default function HeroParticles() {
         id="hero-particles"
         className="absolute inset-0 z-0 w-full h-full"
         options={options}
-        particlesLoaded={particlesLoaded}
       />
     </ParticlesProvider>
   );
