@@ -1,0 +1,35 @@
+---
+import LayoutCyberpunk from "../layouts/LayoutCyberpunk.astro";
+---
+
+<LayoutCyberpunk
+  title="404 — Página no encontrada | HeriDev"
+  description="Esta página no existe o fue movida. Vuelve al portfolio de HeriDev: proyectos, trayectoria y contacto."
+  canonical="https://heri-dev.es/404"
+>
+  <section class="flex min-h-[70vh] flex-col items-center justify-center py-24 text-center">
+    <p class="mb-2 text-sm tracking-widest text-morado uppercase">Error 404</p>
+    <p class="mb-4 font-mono text-7xl font-bold text-white md:text-8xl">
+      4<span class="text-morado">0</span>4
+    </p>
+    <p class="mb-8 max-w-md text-sm leading-relaxed text-texto/60">
+      <span class="text-morado">&gt;</span> Esta ruta no existe o fue movida a otro sector.
+    </p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a
+        href="/"
+        class="rounded border border-morado bg-morado/10 px-6 py-2 text-sm font-medium tracking-wider text-morado transition-all hover:bg-morado hover:text-white"
+      >
+        Volver al inicio
+      </a>
+      <a
+        href="/Ismael_CV.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="rounded border border-gris px-6 py-2 text-sm font-medium tracking-wider text-texto/70 transition-all hover:border-morado hover:text-morado"
+      >
+        Ver mi CV
+      </a>
+    </div>
+  </section>
+</LayoutCyberpunk>

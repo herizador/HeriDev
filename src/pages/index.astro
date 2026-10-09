@@ -56,6 +56,120 @@ const javaProyectos = [
   },
 ];
 
+const stack = [
+  {
+    grupo: "Lenguajes",
+    icon: "code",
+    items: ["Java", "Oracle SQL", "HTML", "CSS"],
+  },
+  {
+    grupo: "Frameworks y web",
+    icon: "spark",
+    items: ["Astro", "React", "Node.js", "WordPress"],
+  },
+  {
+    grupo: "Cloud y datos",
+    icon: "cloud",
+    items: ["Supabase", "Cloudflare R2", "Vercel", "Render", "GitHub"],
+  },
+  {
+    grupo: "Sistemas y redes",
+    icon: "network",
+    items: ["TCP/IP", "IPv4 / IPv6", "Ethernet", "Mantenimiento de equipos"],
+  },
+];
+
+const experiencia = [
+  {
+    fecha: "2023 · Zaragoza",
+    puesto: "Técnico informático",
+    empresa: "Pikolin",
+    puntos: [
+      "Mantenimiento de equipos, impresoras y móviles",
+      "Software empresarial (Bria), usuarios de red y soporte remoto",
+    ],
+  },
+  {
+    fecha: "2023 · Zaragoza",
+    puesto: "Técnico informático",
+    empresa: "CSIF",
+    puntos: [
+      "Beta testing de la web corporativa",
+      "Gestión de usuarios y correos en bases de datos",
+    ],
+  },
+  {
+    fecha: "2019 – 2020 · Lima",
+    puesto: "Atención al cliente y gestión online",
+    empresa: "Ichu Flor S.A.C",
+    puntos: [
+      "Pedidos y entregas en plataformas online",
+      "Web, redes sociales y resolución de incidencias",
+    ],
+  },
+  {
+    fecha: "2018 – 2019 · Lima",
+    puesto: "Auxiliar de mantenimiento de móviles y tablets",
+    empresa: "Tienda de reparación",
+    puntos: [
+      "Reparación de hardware y software",
+      "Mantenimiento preventivo de dispositivos",
+    ],
+  },
+];
+
+const educacion = [
+  {
+    fecha: "2025 – Actual · Zaragoza",
+    titulo: "Desarrollo de Aplicaciones Web",
+    centro: "CPIFP Los Enlaces",
+    detalle: "Java · Bases de datos",
+  },
+  {
+    fecha: "2021 – 2023 · Zaragoza",
+    titulo: "Sistemas Microinformáticos y Redes",
+    centro: "I.E.S Santiago Hernández",
+    detalle: "Web · Sistemas en red · Equipos",
+  },
+  {
+    fecha: "2018 – 2022 · Zaragoza",
+    titulo: "ESO",
+    centro: "Romareda",
+    detalle: "",
+  },
+];
+
+const certificaciones = [
+  {
+    titulo: "Java Foundations",
+    emisor: "Oracle Academy",
+    fecha: "Jun 2026",
+    icon: "code",
+    detalle: "POO, herencia y algoritmos",
+  },
+  {
+    titulo: "Database Programming with SQL",
+    emisor: "Oracle Academy",
+    fecha: "Jun 2026",
+    icon: "cloud",
+    detalle: "JOINs, subconsultas e integridad",
+  },
+  {
+    titulo: "Networking Basics",
+    emisor: "Cisco",
+    fecha: "Jun 2025",
+    icon: "network",
+    detalle: "IPv4/IPv6, Ethernet y routers",
+  },
+  {
+    titulo: "GenAI for Everyone",
+    emisor: "Coursera",
+    fecha: "Ago 2026",
+    icon: "spark",
+    detalle: "Prompt engineering y ética de IA",
+  },
+];
+
 const contactos = [
   {
     etiqueta: "Teléfono",
@@ -212,6 +326,35 @@ const contactos = [
     </div>
   </section>
 
+  <section id="stack" class="mb-24">
+    <div class="mb-2 flex items-center gap-3">
+      <h2 class="shrink-0 text-2xl font-semibold text-white">
+        <span class="text-morado">#</span> Stack
+      </h2>
+      <span aria-hidden="true" class="h-px flex-1 bg-gradient-to-r from-morado/50 to-transparent"></span>
+    </div>
+    <p class="tw tw-s-stack mb-8 max-w-2xl text-sm text-texto/50">
+      Lo que uso para construir y mantener sistemas.
+    </p>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {stack.map((g) => (
+        <article class="reveal flex min-w-0 flex-col rounded-xl border border-gris bg-gris/40 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-morado/60">
+          <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg border border-morado/30 bg-morado/10 text-morado">
+            <Icon name={g.icon} class="h-5 w-5" />
+          </span>
+          <h3 class="mb-3 text-base font-semibold text-white">{g.grupo}</h3>
+          <div class="flex flex-wrap gap-2">
+            {g.items.map((item) => (
+              <span class="rounded-full border border-morado/30 bg-morado/10 px-3 py-1 text-xs font-medium tracking-wider text-morado">
+                {item}
+              </span>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
   <section id="curriculum" class="mb-24">
     <div class="mb-2 flex items-center gap-3">
       <h2 class="shrink-0 text-2xl font-semibold text-white">
@@ -301,6 +444,96 @@ const contactos = [
           </a>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section id="trayectoria" class="mb-24">
+    <div class="mb-2 flex items-center gap-3">
+      <h2 class="shrink-0 text-2xl font-semibold text-white">
+        <span class="text-morado">#</span> Trayectoria
+      </h2>
+      <span aria-hidden="true" class="h-px flex-1 bg-gradient-to-r from-morado/50 to-transparent"></span>
+    </div>
+    <p class="tw tw-s-trayectoria mb-8 max-w-2xl text-sm text-texto/50">
+      Experiencia, formación y certificaciones. El detalle completo está en mi CV.
+    </p>
+    <div class="grid gap-10 lg:grid-cols-2">
+      <div class="min-w-0">
+        <h3 class="mb-6 flex items-center gap-2 text-lg font-semibold text-white">
+          <Icon name="briefcase" class="h-5 w-5 text-morado" />
+          Experiencia
+        </h3>
+        <div class="ml-1">
+          {experiencia.map((e) => (
+            <div class="reveal relative border-l border-morado/25 pb-6 pl-6 last:pb-0">
+              <span aria-hidden="true" class="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full bg-morado shadow-[0_0_12px_rgba(157,0,255,0.8)]"></span>
+              <p class="mb-1 text-xs uppercase tracking-wider text-morado">{e.fecha}</p>
+              <p class="font-semibold text-white">{e.puesto}</p>
+              <p class="mb-2 text-sm text-texto/60">{e.empresa}</p>
+              <ul class="space-y-1 text-sm leading-relaxed text-texto/70">
+                {e.puntos.map((p) => (
+                  <li class="flex gap-2">
+                    <span aria-hidden="true" class="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-morado/70"></span>
+                    <span>{p}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="min-w-0">
+        <h3 class="mb-6 flex items-center gap-2 text-lg font-semibold text-white">
+          <Icon name="cap" class="h-5 w-5 text-morado" />
+          Educación
+        </h3>
+        <div class="ml-1">
+          {educacion.map((e) => (
+            <div class="reveal relative border-l border-morado/25 pb-6 pl-6 last:pb-0">
+              <span aria-hidden="true" class="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full bg-morado shadow-[0_0_12px_rgba(157,0,255,0.8)]"></span>
+              <p class="mb-1 text-xs uppercase tracking-wider text-morado">{e.fecha}</p>
+              <p class="font-semibold text-white">{e.titulo}</p>
+              <p class="text-sm text-texto/60">{e.centro}{e.detalle && ` · ${e.detalle}`}</p>
+            </div>
+          ))}
+        </div>
+        <div class="reveal mt-6 flex items-start gap-4 rounded-xl border border-morado/40 bg-morado/10 p-5">
+          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-morado/30 bg-morado/10 text-morado">
+            <Icon name="user" class="h-5 w-5" />
+          </span>
+          <p class="text-sm leading-relaxed text-texto/70">
+            <span class="font-semibold text-white">Voluntariado · Monitor de ocio y tiempo libre</span> (2026 – actual):
+            actividades socioeducativas para infancia y juventud.
+          </p>
+        </div>
+      </div>
+    </div>
+    <h3 class="mb-6 mt-12 flex items-center gap-2 text-lg font-semibold text-white">
+      <Icon name="file" class="h-5 w-5 text-morado" />
+      Certificaciones
+    </h3>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {certificaciones.map((c) => (
+        <article class="reveal flex min-w-0 flex-col rounded-xl border border-gris bg-gris/40 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-morado/60">
+          <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg border border-morado/30 bg-morado/10 text-morado">
+            <Icon name={c.icon} class="h-5 w-5" />
+          </span>
+          <p class="mb-2 text-xl font-bold text-white">{c.titulo}</p>
+          <p class="mb-1 text-xs uppercase tracking-wider text-morado">{c.emisor} · {c.fecha}</p>
+          <p class="text-sm leading-relaxed text-texto/70">{c.detalle}</p>
+        </article>
+      ))}
+    </div>
+    <div class="reveal mt-8">
+      <a
+        href="/Ismael_CV.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded border border-gris px-6 py-2 text-sm font-medium tracking-wider text-texto/70 transition-all hover:border-morado hover:text-morado"
+      >
+        <Icon name="eye" class="h-4 w-4" />
+        Ver detalle completo en mi CV
+      </a>
     </div>
   </section>
 

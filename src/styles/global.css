@@ -107,6 +107,20 @@
   animation-play-state: paused;
 }
 
+.tw-s-trayectoria {
+  animation:
+    typewriter 1.5s steps(52) 0s forwards,
+    blink-cursor 0.8s step-end 0s 3;
+  animation-play-state: paused;
+}
+
+.tw-s-stack {
+  animation:
+    typewriter 1.5s steps(46) 0s forwards,
+    blink-cursor 0.8s step-end 0s 3;
+  animation-play-state: paused;
+}
+
 .tw-s-contacto {
   animation:
     typewriter 0.4s steps(10) 0s forwards,
@@ -118,6 +132,8 @@
 .tw-s-java.play,
 .tw-s-github.play,
 .tw-s-curriculum.play,
+.tw-s-trayectoria.play,
+.tw-s-stack.play,
 .tw-s-contacto.play,
 .tw-s-sobremi.play {
   animation-play-state: running;
@@ -209,6 +225,16 @@ html {
       typewrite-paragraph 1.5s steps(52) 0s forwards;
     animation-play-state: paused;
   }
+  .tw-s-trayectoria {
+    animation:
+      typewrite-paragraph 1.5s steps(52) 0s forwards;
+    animation-play-state: paused;
+  }
+  .tw-s-stack {
+    animation:
+      typewrite-paragraph 1.5s steps(46) 0s forwards;
+    animation-play-state: paused;
+  }
   .tw-s-contacto {
     animation:
       typewrite-paragraph 0.4s steps(10) 0s forwards;
@@ -218,6 +244,8 @@ html {
   .tw-s-java.play,
   .tw-s-github.play,
   .tw-s-curriculum.play,
+  .tw-s-trayectoria.play,
+  .tw-s-stack.play,
   .tw-s-contacto.play,
   .tw-s-sobremi.play {
     animation-play-state: running;
