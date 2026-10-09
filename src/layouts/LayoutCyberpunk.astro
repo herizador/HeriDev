@@ -11,8 +11,8 @@ export interface Props {
 const SITE_URL = "https://heri-dev.es";
 
 const {
-  title = "HeriDev — Estudiante de Desarrollo Web y Técnico Informático | Java, Astro, React",
-  description = "Portfolio de Ismael Mateo Díaz Gutiérrez (HeriDev), estudiante de Desarrollo de Aplicaciones Web y técnico informático en Zaragoza: Java con certificación Oracle y proyectos web con Astro y React usando Render, Supabase, GitHub, Vercel y Cloudflare R2.",
+  title = "HeriDev — Programador Web en Zaragoza | Java, Astro, React",
+  description = "Portfolio de Ismael Mateo Díaz Gutiérrez (HeriDev), programador web en formación y técnico informático en Zaragoza: estudiante de DAW, Java con certificación Oracle y proyectos web con Astro y React usando Render, Supabase, GitHub, Vercel y Cloudflare R2.",
   canonical = `${SITE_URL}/`,
 } = Astro.props;
 
@@ -34,6 +34,10 @@ const personSchema = {
     "https://github.com/herizador",
     "https://www.linkedin.com/in/ismael-d%C3%ADaz-24072627a",
   ],
+  areaServed: {
+    "@type": "City",
+    name: "Zaragoza",
+  },
   telephone: "+34603177493",
   knowsAbout: ["Java", "Oracle SQL", "Astro", "React", "Supabase", "Cloudflare R2", "Vercel", "Render", "GitHub"],
 };
@@ -48,7 +52,7 @@ const personSchema = {
     <meta name="description" content={description} />
     <meta
       name="keywords"
-      content="HeriDev, Ismael Díaz Gutiérrez, estudiante DAW Zaragoza, portfolio desarrollador, Java, Oracle SQL, Astro, React, Supabase, Cloudflare R2, técnico informático"
+      content="HeriDev, Ismael Díaz Gutiérrez, programador web Zaragoza, desarrollador web Zaragoza, programador Zaragoza, estudiante DAW Zaragoza, portfolio desarrollador, Java, Oracle SQL, Astro, React, Supabase, Cloudflare R2, técnico informático Zaragoza"
     />
     <meta name="author" content="Ismael Mateo Díaz Gutiérrez" />
     <meta name="robots" content="index, follow" />
@@ -95,7 +99,7 @@ const personSchema = {
     </main>
     <footer class="border-t border-morado/20 py-8">
       <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 text-xs text-texto/50 sm:flex-row">
-        <p>&copy; 2026 HeriDev &middot; Ismael Mateo D&iacute;az Guti&eacute;rrez &middot; Zaragoza</p>
+        <p>&copy; 2026 HeriDev &middot; Ismael Mateo D&iacute;az Guti&eacute;rrez &middot; Programador web en Zaragoza</p>
         <p>
           <a href="#inicio" class="transition-colors hover:text-morado">Volver arriba</a>
           <span class="mx-2 text-morado/40">/</span>
