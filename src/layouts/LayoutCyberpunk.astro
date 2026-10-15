@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Navbar from "../components/astro/Navbar.astro";
+import SpeedInsights from "@vercel/speed-insights/astro";
 
 export interface Props {
   title?: string;
@@ -11,7 +12,7 @@ export interface Props {
 const SITE_URL = "https://heri-dev.es";
 
 const {
-  title = "HeriDev — Programador Web en Zaragoza | Java, Astro, React",
+  title = "Ismael Mateo Díaz Gutiérrez (HeriDev) — Programador Web en Zaragoza",
   description = "Portfolio de Ismael Mateo Díaz Gutiérrez (HeriDev), programador web en formación y técnico informático en Zaragoza: estudiante de DAW, Java con certificación Oracle y proyectos web con Astro y React usando Render, Supabase, GitHub, Vercel y Cloudflare R2.",
   canonical = `${SITE_URL}/`,
 } = Astro.props;
@@ -22,7 +23,11 @@ const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Ismael Mateo Díaz Gutiérrez",
-  alternateName: "HeriDev",
+  givenName: "Ismael Mateo",
+  familyName: "Díaz Gutiérrez",
+  alternateName: ["HeriDev", "Ismael Díaz", "Ismael Mateo Díaz"],
+  description:
+    "Portfolio de Ismael Mateo Díaz Gutiérrez (HeriDev), programador web en formación y técnico informático en Zaragoza.",
   url: SITE_URL,
   jobTitle: "Estudiante de Desarrollo de Aplicaciones Web y Técnico Informático",
   address: {
@@ -39,6 +44,38 @@ const personSchema = {
     name: "Zaragoza",
   },
   telephone: "+34603177493",
+  alumniOf: [
+    {
+      "@type": "EducationalOrganization",
+      name: "I.E.S Santiago Hernández",
+    },
+    {
+      "@type": "EducationalOrganization",
+      name: "Romareda",
+    },
+  ],
+  hasCredential: [
+    {
+      "@type": "EducationalOccupationalCredential",
+      name: "Java Foundations",
+      recognizedBy: { "@type": "Organization", name: "Oracle Academy" },
+    },
+    {
+      "@type": "EducationalOccupationalCredential",
+      name: "Database Programming with SQL",
+      recognizedBy: { "@type": "Organization", name: "Oracle Academy" },
+    },
+    {
+      "@type": "EducationalOccupationalCredential",
+      name: "Networking Basics",
+      recognizedBy: { "@type": "Organization", name: "Cisco" },
+    },
+    {
+      "@type": "EducationalOccupationalCredential",
+      name: "GenAI for Everyone",
+      recognizedBy: { "@type": "Organization", name: "Coursera" },
+    },
+  ],
   knowsAbout: ["Java", "Oracle SQL", "Astro", "React", "Supabase", "Cloudflare R2", "Vercel", "Render", "GitHub"],
 };
 ---
@@ -52,7 +89,7 @@ const personSchema = {
     <meta name="description" content={description} />
     <meta
       name="keywords"
-      content="HeriDev, Ismael Díaz Gutiérrez, programador web Zaragoza, desarrollador web Zaragoza, programador Zaragoza, estudiante DAW Zaragoza, portfolio desarrollador, Java, Oracle SQL, Astro, React, Supabase, Cloudflare R2, técnico informático Zaragoza"
+      content="HeriDev, Ismael Mateo Díaz Gutiérrez, Ismael Mateo Diaz Gutierrez, Ismael Díaz, Ismael Diaz, programador web Zaragoza, desarrollador web Zaragoza, programador Zaragoza, estudiante DAW Zaragoza, portfolio desarrollador, Java, Oracle SQL, Astro, React, Supabase, Cloudflare R2, técnico informático Zaragoza"
     />
     <meta name="author" content="Ismael Mateo Díaz Gutiérrez" />
     <meta name="robots" content="index, follow" />
@@ -94,6 +131,7 @@ const personSchema = {
     <div id="scanline" aria-hidden="true" />
     <div id="scroll-progress" aria-hidden="true" />
     <Navbar />
+    <SpeedInsights />
     <main class="mx-auto max-w-6xl px-4 pb-16">
       <slot />
     </main>
