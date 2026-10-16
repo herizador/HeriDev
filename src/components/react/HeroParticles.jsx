@@ -20,7 +20,7 @@ export default function HeroParticles() {
     fullScreen: { enable: false },
     particles: {
       number: { value: 70, density: { enable: true, area: 900 } },
-      color: { value: ["#9d00ff", "#c07bff", "#7a2bd6"] },
+      color: { value: ["#9d00ff", "#7a2bd6", "#5b21b6"] },
       links: { enable: false },
       move: {
         enable: true,
@@ -29,10 +29,10 @@ export default function HeroParticles() {
         outModes: { default: "out" },
       },
       size: {
-        value: { min: 1, max: 2.4 },
+        value: { min: 1, max: 2.6 },
       },
       opacity: {
-        value: { min: 0.25, max: 0.6 },
+        value: { min: 0.35, max: 0.7 },
         animation: { enable: true, speed: 0.6, sync: false },
       },
     },
