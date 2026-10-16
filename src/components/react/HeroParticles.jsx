@@ -21,7 +21,7 @@ function buildOptions(theme) {
         color: {
           value: light
             ? ["#9d00ff", "#8a00e6", "#7a00cc"]
-            : ["#9d00ff", "#7a2bd6", "#5b21b6"],
+            : ["#ffffff", "#e6e1f2", "#c9c2dd"],
         },
       },
       links: { enable: false },
