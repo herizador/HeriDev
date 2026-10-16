@@ -426,6 +426,17 @@ button:focus-visible {
   );
 }
 
+/* En modo claro el texto oscuro ya contrasta solo: velo más ligero
+   para que las partículas se vean también en el centro */
+[data-theme="light"] .hero-mask {
+  background: radial-gradient(
+    ellipse 60% 55% at 50% 45%,
+    rgba(var(--color-fondo) / 0.55) 0%,
+    rgba(var(--color-fondo) / 0.15) 55%,
+    transparent 100%
+  );
+}
+
 /* Botón flotante de tema: transición sol/luna */
 #theme-toggle svg {
   position: absolute;

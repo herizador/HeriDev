@@ -16,7 +16,7 @@ function buildOptions(theme) {
     fpsLimit: 60,
     fullScreen: { enable: false },
     particles: {
-      number: { value: 70, density: { enable: true, area: 900 } },
+      number: { value: light ? 90 : 70, density: { enable: true, area: 900 } },
       color: {
         value: light
           ? ["#9d00ff", "#8a00e6", "#7a00cc"]
@@ -30,10 +30,10 @@ function buildOptions(theme) {
         outModes: { default: "out" },
       },
       size: {
-        value: light ? { min: 1.2, max: 3 } : { min: 1, max: 2.6 },
+        value: light ? { min: 1.2, max: 3.2 } : { min: 1, max: 2.6 },
       },
       opacity: {
-        value: light ? { min: 0.5, max: 0.85 } : { min: 0.35, max: 0.7 },
+        value: light ? { min: 0.55, max: 0.9 } : { min: 0.35, max: 0.7 },
         animation: { enable: true, speed: 0.6, sync: false },
       },
     },
