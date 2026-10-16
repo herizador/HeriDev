@@ -472,6 +472,14 @@ button:focus-visible {
   }
 }
 
+/* Transición circular de tema (View Transitions API).
+   Sin esto el navegador aplicaría su fundido por defecto. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
 /* ---- Menú móvil animado ---- */
 #menu-overlay {
   display: grid;
