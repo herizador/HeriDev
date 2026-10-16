@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import Navbar from "../components/astro/Navbar.astro";
 import SpeedInsights from "@vercel/speed-insights/astro";
+import ThemeToggle from "../components/astro/ThemeToggle.astro";
 
 export interface Props {
   title?: string;
@@ -83,6 +84,17 @@ const personSchema = {
 <!doctype html>
 <html lang="es">
   <head>
+    <script is:inline>
+      (function () {
+        try {
+          var saved = localStorage.getItem("heridev-theme");
+          document.documentElement.dataset.theme =
+            saved === "light" || saved === "dark" ? saved : "dark";
+        } catch (e) {
+          document.documentElement.dataset.theme = "dark";
+        }
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
@@ -94,7 +106,7 @@ const personSchema = {
     <meta name="author" content="Ismael Mateo Díaz Gutiérrez" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#9d00ff" />
+    <meta name="theme-color" content="#05050a" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -155,6 +167,7 @@ const personSchema = {
         <path d="m5 12 7-7 7 7"></path><path d="M12 19V5"></path>
       </svg>
     </button>
+    <ThemeToggle />
     <script>
       (function() {
         // Typewriter por secciones (contrato existente) + revelado suave para tarjetas

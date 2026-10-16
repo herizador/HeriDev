@@ -4,10 +4,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        fondo: "#05050a",
-        morado: "#9d00ff",
-        gris: "#1a1a2e",
-        texto: "#e0e0e0",
+        fondo: "rgb(var(--color-fondo) / <alpha-value>)",
+        morado: "rgb(var(--color-morado) / <alpha-value>)",
+        gris: "rgb(var(--color-gris) / <alpha-value>)",
+        texto: "rgb(var(--color-texto) / <alpha-value>)",
       },
       fontFamily: {
         mono: ['"Fira Code"', "monospace"],

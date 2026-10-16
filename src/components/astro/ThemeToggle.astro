@@ -1,0 +1,52 @@
+---
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  aria-pressed="false"
+  aria-label="Cambiar a modo claro"
+  class="fixed bottom-6 left-6 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-morado/50 bg-fondo/90 text-morado shadow-[0_0_20px_rgba(157,0,255,0.35)] backdrop-blur transition-all hover:bg-morado hover:text-white"
+>
+  <svg class="icon-sun h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2" />
+    <path d="M12 20v2" />
+    <path d="m4.9 4.9 1.4 1.4" />
+    <path d="m17.7 17.7 1.4 1.4" />
+    <path d="M2 12h2" />
+    <path d="M20 12h2" />
+    <path d="m6.3 17.7-1.4 1.4" />
+    <path d="m19.1 4.9-1.4 1.4" />
+  </svg>
+  <svg class="icon-moon h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+</button>
+
+<script>
+  (function () {
+    var btn = document.getElementById("theme-toggle");
+    var meta = document.querySelector('meta[name="theme-color"]');
+    function apply(theme) {
+      document.documentElement.dataset.theme = theme;
+      try {
+        localStorage.setItem("heridev-theme", theme);
+      } catch (e) {}
+      var light = theme === "light";
+      if (btn) {
+        btn.setAttribute("aria-pressed", String(light));
+        btn.setAttribute("aria-label", light ? "Cambiar a modo oscuro" : "Cambiar a modo claro");
+      }
+      if (meta) {
+        meta.setAttribute("content", light ? "#f5f3fa" : "#05050a");
+      }
+    }
+    apply(document.documentElement.dataset.theme === "light" ? "light" : "dark");
+    if (btn) {
+      btn.addEventListener("click", function () {
+        apply(document.documentElement.dataset.theme === "light" ? "dark" : "light");
+      });
+    }
+  })();
+</script>

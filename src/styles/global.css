@@ -253,8 +253,8 @@ html {
 }
 
 body {
-  background-color: #05050a;
-  color: #e0e0e0;
+  background-color: rgb(var(--color-fondo));
+  color: rgb(var(--color-texto));
 }
 
 ::selection {
@@ -267,11 +267,11 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #05050a;
+  background: rgb(var(--color-fondo));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #9d00ff;
+  background: rgb(var(--color-morado));
   border-radius: 3px;
 }
 
@@ -366,4 +366,167 @@ button:focus-visible {
   outline: 2px solid #9d00ff;
   outline-offset: 3px;
   border-radius: 4px;
+}
+
+/* ---- Temas oscuro / claro ---- */
+:root {
+  color-scheme: dark;
+  --color-fondo: 5 5 10;
+  --color-morado: 157 0 255;
+  --color-gris: 26 26 46;
+  --color-texto: 224 224 224;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --color-fondo: 245 243 250;
+  --color-morado: 122 0 204;
+  --color-gris: 255 255 255;
+  --color-texto: 26 26 46;
+}
+
+/* Texto fuerte que se adapta al tema (titulares y destacados) */
+.t-strong {
+  color: #ffffff;
+}
+
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] .t-strong {
+  color: rgb(var(--color-texto));
+}
+
+[data-theme="light"] .nav-brand:hover {
+  color: rgb(var(--color-texto));
+}
+
+/* Resaltado de palabras clave en tema claro */
+[data-theme="light"] .kw {
+  color: #2a0a45;
+  background: rgba(122, 0, 204, 0.1);
+  border-bottom-color: rgba(122, 0, 204, 0.5);
+}
+
+/* Velo central del hero: despeja el texto en ambos temas */
+.hero-mask {
+  background: radial-gradient(
+    ellipse 60% 55% at 50% 45%,
+    rgba(var(--color-fondo) / 0.92) 0%,
+    rgba(var(--color-fondo) / 0.35) 55%,
+    transparent 100%
+  );
+}
+
+.hero-glow {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(var(--color-morado) / 0.12) 0%,
+    transparent 65%
+  );
+}
+
+/* Botón flotante de tema: transición sol/luna */
+#theme-toggle svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -10px 0 0 -10px;
+  transition: transform 0.5s ease, opacity 0.3s ease;
+}
+
+#theme-toggle .icon-sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+#theme-toggle .icon-moon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
+}
+
+[data-theme="light"] #theme-toggle .icon-sun {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
+}
+
+[data-theme="light"] #theme-toggle .icon-moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #theme-toggle svg {
+    transition: none;
+  }
+}
+
+/* ---- Menú móvil animado ---- */
+#menu-overlay {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    grid-template-rows 0.35s ease,
+    opacity 0.3s ease,
+    transform 0.35s ease;
+}
+
+#menu-overlay.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: none;
+}
+
+#menu-overlay .menu-links {
+  overflow: hidden;
+  min-height: 0;
+}
+
+#menu-overlay .menu-links a {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+#menu-overlay.open .menu-links a {
+  opacity: 1;
+  transform: none;
+}
+
+#menu-overlay.open .menu-links a:nth-child(1) { transition-delay: 0.03s; }
+#menu-overlay.open .menu-links a:nth-child(2) { transition-delay: 0.06s; }
+#menu-overlay.open .menu-links a:nth-child(3) { transition-delay: 0.09s; }
+#menu-overlay.open .menu-links a:nth-child(4) { transition-delay: 0.12s; }
+#menu-overlay.open .menu-links a:nth-child(5) { transition-delay: 0.15s; }
+#menu-overlay.open .menu-links a:nth-child(6) { transition-delay: 0.18s; }
+#menu-overlay.open .menu-links a:nth-child(7) { transition-delay: 0.21s; }
+
+#menu-toggle span {
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+#menu-toggle.menu-open span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+#menu-toggle.menu-open span:nth-child(2) {
+  opacity: 0;
+}
+
+#menu-toggle.menu-open span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #menu-overlay,
+  #menu-overlay .menu-links a,
+  #menu-toggle span {
+    transition: none;
+  }
 }

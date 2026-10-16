@@ -12,7 +12,7 @@ const links = [
 
 <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 border-b border-morado/20 bg-fondo/80 backdrop-blur-md transition-all">
   <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-    <a href="#inicio" class="font-bold text-lg tracking-wider text-morado hover:text-white transition-colors">
+    <a href="#inicio" class="nav-brand font-bold text-lg tracking-wider text-morado hover:text-white transition-colors">
       &lt;HeriDev /&gt;
     </a>
     <button id="menu-toggle" class="flex flex-col gap-1.5 md:hidden" aria-label="Abrir menú" aria-expanded="false">
@@ -34,16 +34,18 @@ const links = [
       ))}
     </ul>
   </div>
-  <div id="menu-overlay" class="hidden flex-col border-t border-morado/20 bg-fondo/95 px-4 py-4 md:hidden">
-    {links.map((link) => (
-      <a
-        href={link.href}
-        data-navlink
-        class="block py-2 text-sm uppercase tracking-wider text-texto/70 hover:text-morado transition-colors"
-      >
-        {link.label}
-      </a>
-    ))}
+  <div id="menu-overlay" class="border-morado/20 bg-fondo/95 md:hidden">
+    <div class="menu-links flex flex-col border-t border-morado/20 px-4 py-4">
+      {links.map((link) => (
+        <a
+          href={link.href}
+          data-navlink
+          class="block py-2 text-sm uppercase tracking-wider text-texto/70 hover:text-morado transition-colors"
+        >
+          {link.label}
+        </a>
+      ))}
+    </div>
   </div>
 </nav>
 
@@ -53,17 +55,22 @@ const links = [
     var overlay = document.getElementById("menu-overlay");
     var navbar = document.getElementById("navbar");
     if (toggle && overlay) {
+      var setMenu = function(open) {
+        overlay.classList.toggle("open", open);
+        toggle.classList.toggle("menu-open", open);
+        toggle.setAttribute("aria-expanded", String(open));
+        toggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+      };
       toggle.addEventListener("click", function() {
-        var isHidden = overlay.classList.toggle("hidden");
-        overlay.classList.toggle("flex", !isHidden);
-        toggle.setAttribute("aria-expanded", String(!isHidden));
+        setMenu(!overlay.classList.contains("open"));
       });
       overlay.querySelectorAll("a").forEach(function(a) {
         a.addEventListener("click", function() {
-          overlay.classList.add("hidden");
-          overlay.classList.remove("flex");
-          toggle.setAttribute("aria-expanded", "false");
+          setMenu(false);
         });
+      });
+      document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") setMenu(false);
       });
     }
     // Intensifica el fondo al hacer scroll

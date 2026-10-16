@@ -213,8 +213,8 @@ const contactos = [
     <div class="absolute top-0 left-0 z-0 w-full h-screen">
       <HeroParticles client:only="react" />
     </div>
-    <div aria-hidden="true" class="absolute top-0 left-0 z-[1] w-full h-screen bg-[radial-gradient(ellipse_60%_55%_at_50%_45%,rgba(5,5,10,0.92)_0%,rgba(5,5,10,0.35)_55%,transparent_100%)]"></div>
-    <div aria-hidden="true" class="absolute top-1/4 left-1/2 -translate-x-1/2 z-[1] w-[42rem] max-w-full h-[22rem] bg-[radial-gradient(ellipse_at_center,rgba(157,0,255,0.12)_0%,transparent_65%)]"></div>
+    <div aria-hidden="true" class="hero-mask absolute top-0 left-0 z-[1] w-full h-screen"></div>
+    <div aria-hidden="true" class="hero-glow absolute top-1/4 left-1/2 -translate-x-1/2 z-[1] w-[42rem] max-w-full h-[22rem]"></div>
     <div class="relative z-10 w-full max-w-6xl mx-auto pt-24 px-4">
       <div class="w-full">
         <p class="mb-4 inline-flex items-center gap-2 rounded-full border border-morado/30 bg-morado/10 px-4 py-1.5 text-xs tracking-wider text-morado">
@@ -409,19 +409,19 @@ const contactos = [
         <dl class="mb-6 grid max-w-xl grid-cols-2 gap-3 text-xs sm:grid-cols-4">
           <div class="rounded-lg border border-gris bg-fondo/60 p-3">
             <dt class="mb-1 uppercase tracking-wider text-texto/40">Formato</dt>
-            <dd class="font-medium text-white">PDF</dd>
+            <dd class="font-medium t-strong">PDF</dd>
           </div>
           <div class="rounded-lg border border-gris bg-fondo/60 p-3">
             <dt class="mb-1 uppercase tracking-wider text-texto/40">Idioma</dt>
-            <dd class="font-medium text-white">Español</dd>
+            <dd class="font-medium t-strong">Español</dd>
           </div>
           <div class="rounded-lg border border-gris bg-fondo/60 p-3">
             <dt class="mb-1 uppercase tracking-wider text-texto/40">Zona</dt>
-            <dd class="font-medium text-white">Zaragoza</dd>
+            <dd class="font-medium t-strong">Zaragoza</dd>
           </div>
           <div class="rounded-lg border border-gris bg-fondo/60 p-3">
             <dt class="mb-1 uppercase tracking-wider text-texto/40">Contacto</dt>
-            <dd class="font-medium text-white">603 177 493</dd>
+            <dd class="font-medium t-strong">603 177 493</dd>
           </div>
         </dl>
         <div class="flex flex-wrap gap-4">
@@ -468,7 +468,7 @@ const contactos = [
             <div class="reveal relative border-l border-morado/25 pb-6 pl-6 last:pb-0">
               <span aria-hidden="true" class="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full bg-morado shadow-[0_0_12px_rgba(157,0,255,0.8)]"></span>
               <p class="mb-1 text-xs uppercase tracking-wider text-morado">{e.fecha}</p>
-              <p class="font-semibold text-white">{e.puesto}</p>
+              <p class="font-semibold t-strong">{e.puesto}</p>
               <p class="mb-2 text-sm text-texto/60">{e.empresa}</p>
               <ul class="space-y-1 text-sm leading-relaxed text-texto/70">
                 {e.puntos.map((p) => (
@@ -492,7 +492,7 @@ const contactos = [
             <div class="reveal relative border-l border-morado/25 pb-6 pl-6 last:pb-0">
               <span aria-hidden="true" class="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full bg-morado shadow-[0_0_12px_rgba(157,0,255,0.8)]"></span>
               <p class="mb-1 text-xs uppercase tracking-wider text-morado">{e.fecha}</p>
-              <p class="font-semibold text-white">{e.titulo}</p>
+              <p class="font-semibold t-strong">{e.titulo}</p>
               <p class="text-sm text-texto/60">{e.centro}{e.detalle && ` · ${e.detalle}`}</p>
             </div>
           ))}
@@ -502,7 +502,7 @@ const contactos = [
             <Icon name="user" class="h-5 w-5" />
           </span>
           <p class="text-sm leading-relaxed text-texto/70">
-            <span class="font-semibold text-white">Voluntariado · Monitor de ocio y tiempo libre</span> (2026 – actual):
+            <span class="font-semibold t-strong">Voluntariado · Monitor de ocio y tiempo libre</span> (2026 – actual):
             actividades socioeducativas para infancia y juventud.
           </p>
         </div>
@@ -518,7 +518,7 @@ const contactos = [
           <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg border border-morado/30 bg-morado/10 text-morado">
             <Icon name={c.icon} class="h-5 w-5" />
           </span>
-          <p class="mb-2 text-xl font-bold text-white">{c.titulo}</p>
+          <p class="mb-2 text-xl font-bold t-strong">{c.titulo}</p>
           <p class="mb-1 text-xs uppercase tracking-wider text-morado">{c.emisor} · {c.fecha}</p>
           <p class="text-sm leading-relaxed text-texto/70">{c.detalle}</p>
         </article>
@@ -628,7 +628,7 @@ const contactos = [
           </span>
           <span class="min-w-0">
             <span class="block text-xs uppercase tracking-wider text-texto/40">{c.etiqueta}</span>
-            <span class="block truncate text-sm font-medium text-white group-hover:text-morado">{c.valor}</span>
+            <span class="block truncate text-sm font-medium t-strong group-hover:text-morado">{c.valor}</span>
           </span>
           <Icon name="external" class="ml-auto h-4 w-4 shrink-0 text-texto/30 transition-colors group-hover:text-morado" />
         </a>
