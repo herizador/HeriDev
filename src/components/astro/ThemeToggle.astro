@@ -33,6 +33,9 @@
       try {
         localStorage.setItem("heridev-theme", theme);
       } catch (e) {}
+      try {
+        window.dispatchEvent(new CustomEvent("heridev:theme", { detail: theme }));
+      } catch (e) {}
       var light = theme === "light";
       if (btn) {
         btn.setAttribute("aria-pressed", String(light));
