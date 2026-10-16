@@ -17,10 +17,12 @@ function buildOptions(theme) {
     fullScreen: { enable: false },
     particles: {
       number: { value: light ? 110 : 70, density: { enable: true, area: 900 } },
-      color: {
-        value: light
-          ? ["#9d00ff", "#8a00e6", "#7a00cc"]
-          : ["#9d00ff", "#7a2bd6", "#5b21b6"],
+      paint: {
+        color: {
+          value: light
+            ? ["#9d00ff", "#8a00e6", "#7a00cc"]
+            : ["#9d00ff", "#7a2bd6", "#5b21b6"],
+        },
       },
       links: { enable: false },
       move: {
