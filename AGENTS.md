@@ -28,6 +28,7 @@ src/styles/global.css   # keyframes typewriter/scanline + clases .tw-* / .tw-s-*
 - Env solo vía `import.meta.env` en frontmatter/endpoints, nunca en bundle cliente: `GITHUB_TOKEN` (opcional, solo eleva rate-limit), `SUPABASE_URL` / `SUPABASE_ANON_KEY`, `R2_ENDPOINT` / `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY`.
 - `getRepos()` falla suave a `[]` (rate-limit/offline no deben romper `build`). `index.astro` muestra fallback + aviso si falta `GITHUB_TOKEN`. Mantener ese comportamiento.
 - SEO centralizado en `LayoutCyberpunk.astro` (canonical, Open Graph/Twitter, JSON-LD `Person`, `og:image` → `public/og-cover.jpg` 1200×630). Las páginas solo pasan `title`/`description`/`canonical` como props. WhatsApp/LinkedIn no aceptan SVG en `og:image`: mantener JPG/PNG. Cada `<img>` futura lleva `alt` descriptivo.
+- Licencia **propietaria** en `LICENSE` ("todos los derechos reservados", consulta permitida, reutilización prohibida). No sustituirla por MIT/Apache, no añadir permisos de reutilización y no retirar el aviso de copyright del footer sin pedirlo.
 
 ## Comandos
 

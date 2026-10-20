@@ -19,9 +19,11 @@ El sitio funciona como carta de presentación profesional, exhibiendo proyectos 
 ## Paleta de colores
 
 - `#05050a` — Fondo principal (negro profundo)
-- `#00f3ff` — Cian neón (acento primario, enlaces, bordes)
-- `#9d00ff` — Morado neón (acento secundario, links de partículas)
+- `#9d00ff` — Morado de marca (acento primario: enlaces, bordes, foco)
+- `#1a1a2e` — Gris de superficies y bordes suaves
 - `#e0e0e0` — Texto base
+
+Los colores viven en variables CSS (`--color-fondo`, `--color-morado`, `--color-gris`, `--color-texto`) y el modo claro se activa con `html[data-theme="light"]`.
 
 Tipografía: **Fira Code** (Google Fonts), monoespaciada.
 
@@ -80,8 +82,8 @@ src/
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/herizador/heridev-portfolio.git
-cd heridev-portfolio
+git clone https://github.com/herizador/HeriDev.git
+cd HeriDev
 
 # Instalar dependencias
 npm install
@@ -123,4 +125,11 @@ La variable `GITHUB_TOKEN` debe configurarse en el panel de Vercel → Project S
 
 ## Licencia
 
-MIT
+**© 2026 Ismael Mateo Díaz Gutiérrez (HeriDev). Todos los derechos reservados.**
+
+Este repositorio es público para que cualquiera pueda **consultar y evaluar** el código, pero no es software libre: **no se concede permiso** para copiarlo, modificarlo, reutilizarlo, redistribuirlo ni desplegarlo, total o parcialmente, sin autorización previa y por escrito del autor.
+
+- Texto completo: [LICENSE](./LICENSE)
+- Permisos y consultas: heridev@proton.me
+
+Las dependencias de terceros (Astro, React, tsparticles, Tailwind CSS, Fira Code, etc.) mantienen sus propias licencias y **no** están cubiertas por esta licencia.

@@ -1,0 +1,49 @@
+LICENCIA PROPIETARIA — TODOS LOS DERECHOS RESERVADOS
+Copyright (c) 2026 Ismael Mateo Díaz Gutiérrez (HeriDev)
+Todos los derechos reservados.
+
+Este repositorio, su código fuente, su diseño visual, sus textos, sus imágenes, su currículum y cualquier otro contenido original en él incluido (en adelante, "la Obra") son propiedad exclusiva de Ismael Mateo Díaz Gutiérrez (HeriDev) y están protegidos por la legislación española de propiedad intelectual (Real Decreto Legislativo 1/1996) y por los convenios internacionales aplicables (Convenio de Berna).
+
+1. PERMISO LIMITADO DE CONSULTA
+
+Se autoriza la visualización, lectura y examen de la Obra con fines de evaluación profesional, formativos o de investigación, siempre que no se realice ningún uso distinto del meramente consultivo.
+
+2. USOS NO AUTORIZADOS
+
+Salvo autorización previa y por escrito del titular, queda prohibido:
+
+  a) copiar, reproducir o descargar la Obra, total o parcialmente, para cualquier finalidad distinta de la consulta;
+  b) modificar, adaptar, traducir o crear obras derivadas;
+  c) distribuir, publicar, comunicar públicamente, sublicenciar, alquilar o vender la Obra;
+  d) desplegar la Obra, o cualquier versión derivada, en cualquier servidor o servicio de alojamiento;
+  e) utilizar la Obra, total o parcialmente, como plantilla, base o componente de otro sitio web, producto o proyecto, comercial o personal;
+  f) extraer, reutilizar o imitar el diseño visual, la estructura, los textos o los recursos gráficos.
+
+3. FORKS EN GITHUB
+
+La función "fork" de GitHub es una característica de la plataforma y no concede ningún derecho de uso sobre la Obra. Cualquier copia creada mediante fork queda sujeta a las prohibiciones de la sección 2.
+
+4. CITAS
+
+Se permiten citas breves con fines de crítica, reseña o enseñanza, siempre que se identifique claramente la autoría y se enlace al repositorio original, conforme al derecho de cita.
+
+5. DEPENDENCIAS DE TERCEROS
+
+Las bibliotecas, frameworks, tipografías y demás componentes de terceros utilizados por la Obra (entre otros Astro, React, tsparticles, Tailwind CSS y Fira Code) se rigen por sus propias licencias y no quedan cubiertos por la presente licencia.
+
+6. AUSENCIA DE GARANTÍA
+
+La Obra se proporciona "tal cual", sin garantía de ningún tipo, expresa o implícita. El titular no será responsable de ningún daño derivado del uso o de la imposibilidad de uso de la Obra.
+
+7. CONTACTO Y PERMISOS
+
+Para solicitar cualquier autorización de uso: heridev@proton.me
+
+---
+
+PROPRIETARY LICENSE — ALL RIGHTS RESERVED
+Copyright (c) 2026 Ismael Mateo Díaz Gutiérrez (HeriDev). All rights reserved.
+
+This repository is publicly viewable for review and evaluation purposes only. No permission is granted to copy, modify, distribute, publish, sublicense, sell or deploy this work, in whole or in part, without the prior written consent of the author. Third-party dependencies remain under their respective licenses. The work is provided "as is", without warranty of any kind.
+
+For licensing requests: heridev@proton.me
