@@ -10,13 +10,16 @@ function currentTheme() {
   return document.documentElement.dataset.theme === "light" ? "light" : "dark";
 }
 
-function buildOptions(theme) {
+function buildOptions(theme, reducedMotion) {
   var light = theme === "light";
+  var count = light ? 110 : 70;
+  if (reducedMotion) count = Math.round(count / 2);
+
   return {
     fpsLimit: 60,
     fullScreen: { enable: false },
     particles: {
-      number: { value: light ? 110 : 70, density: { enable: true, area: 900 } },
+      number: { value: count, density: { enable: true, area: 900 } },
       paint: {
         color: {
           value: light
@@ -26,7 +29,7 @@ function buildOptions(theme) {
       },
       links: { enable: false },
       move: {
-        enable: true,
+        enable: !reducedMotion,
         speed: 0.35,
         direction: "none",
         outModes: { default: "out" },
@@ -36,12 +39,12 @@ function buildOptions(theme) {
       },
       opacity: {
         value: light ? { min: 0.65, max: 0.95 } : { min: 0.35, max: 0.7 },
-        animation: { enable: true, speed: 0.6, sync: false },
+        animation: { enable: !reducedMotion, speed: 0.6, sync: false },
       },
     },
     interactivity: {
       events: {
-        onHover: { enable: true, mode: "attract" },
+        onHover: { enable: !reducedMotion, mode: "attract" },
       },
       modes: {
         attract: { distance: 140, duration: 0.4, speed: 0.8 },
@@ -53,6 +56,7 @@ function buildOptions(theme) {
 
 export default function HeroParticles() {
   const [theme, setTheme] = useState(currentTheme);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(function () {
     var onTheme = function (e) {
@@ -62,6 +66,19 @@ export default function HeroParticles() {
     window.addEventListener("heridev:theme", onTheme);
     return function () {
       window.removeEventListener("heridev:theme", onTheme);
+    };
+  }, []);
+
+  // Con movimiento reducido: menos partículas, sin desplazamiento ni atracción.
+  useEffect(function () {
+    var mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    var update = function () {
+      setReducedMotion(mq.matches);
+    };
+    update();
+    mq.addEventListener("change", update);
+    return function () {
+      mq.removeEventListener("change", update);
     };
   }, []);
 
@@ -75,8 +92,8 @@ export default function HeroParticles() {
   }, []);
 
   const options = useMemo(function () {
-    return buildOptions(theme);
-  }, [theme]);
+    return buildOptions(theme, reducedMotion);
+  }, [theme, reducedMotion]);
 
   return (
     <ParticlesProvider init={initEngine}>

@@ -284,8 +284,18 @@ body {
   }
   .reveal {
     opacity: 1 !important;
+    translate: none !important;
     transform: none !important;
     transition: none !important;
+  }
+  /* Sin animación, el texto debe verse completo (el typewriter arranca en max-width: 0) */
+  .tw {
+    animation: none !important;
+    max-width: none !important;
+    clip-path: none !important;
+    border-right: none !important;
+    white-space: normal;
+    width: auto;
   }
 }
 
@@ -309,16 +319,27 @@ section[id]:target {
   100% { filter: none; }
 }
 
-/* ---- Revelado suave para tarjetas (convive con el typewriter .tw-s-*) ---- */
+/* ---- Revelado suave para tarjetas (convive con el typewriter .tw-s-*) ----
+   Usa `translate` en lugar de `transform` para no pisar el hover:-translate-y-1
+   de Tailwind: así el revelado y el levantamiento al pasar el ratón conviven. */
 .reveal {
   opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  translate: 0 18px;
+  /* El shorthand anula el transition-all de Tailwind, así que replicamos aquí
+     los 300ms de hover (transform, borde, sombra, fondo, color). */
+  transition:
+    opacity 0.6s ease,
+    translate 0.6s ease,
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .reveal.play {
   opacity: 1;
-  transform: none;
+  translate: 0 0;
 }
 
 /* ---- Resaltado de palabras clave ---- */

@@ -181,7 +181,33 @@ const personSchema = {
         if (typeof IntersectionObserver !== 'undefined') {
           var twEls = document.querySelectorAll('[class*="tw-s-"]');
           var revealEls = document.querySelectorAll('.reveal');
-          var show = function(el) { el.classList.add('play'); };
+
+          // Escalonado: cada tarjeta entra 80ms después que su hermana anterior.
+          // El retardo se aplica en línea y se limpia tras la entrada para que
+          // no retrase el hover (transition-all) de las tarjetas.
+          var STAGGER_MS = 80;
+          var MAX_STAGGER = 6;
+          var clearDelay = function(el) {
+            var delay = parseFloat(el.style.transitionDelay) || 0;
+            window.setTimeout(function() { el.style.transitionDelay = ''; }, 700 + delay);
+          };
+          revealEls.forEach(function(el) {
+            var parent = el.parentElement;
+            if (!parent) return;
+            var siblings = Array.prototype.filter.call(parent.children, function(c) {
+              return c.classList && c.classList.contains('reveal');
+            });
+            var idx = siblings.indexOf(el);
+            if (idx > 0) {
+              el.style.transitionDelay = Math.min(idx, MAX_STAGGER) * STAGGER_MS + 'ms';
+            }
+          });
+
+          var show = function(el) {
+            if (el.classList.contains('play')) return;
+            el.classList.add('play');
+            if (el.style.transitionDelay) clearDelay(el);
+          };
           var obs = new IntersectionObserver(function(entries) {
             entries.forEach(function(entry) {
               if (entry.isIntersecting) {
