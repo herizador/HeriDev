@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Particles, { ParticlesProvider } from "@tsparticles/react";
 import { loadBasic } from "@tsparticles/basic";
 import { loadInteractivityPlugin } from "@tsparticles/plugin-interactivity";
@@ -7,6 +7,15 @@ import { loadExternalAttractInteraction } from "@tsparticles/interaction-externa
 
 export default function HeroParticles() {
   const containerRef = useRef(null);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   const particlesLoaded = useCallback(async (container) => {
     containerRef.current = container;
@@ -20,6 +29,9 @@ export default function HeroParticles() {
   }, []);
 
   useEffect(() => {
+    // Con movimiento reducido las partículas se quedan quietas: sin explosiones.
+    if (reducedMotion) return;
+
     const idle = { x: 0, y: 0, time: Date.now() };
     let lastExplosion = 0;
     let canvasRect = null;
@@ -58,13 +70,13 @@ export default function HeroParticles() {
       clearInterval(interval);
       document.removeEventListener("mousemove", onMouseMove);
     };
-  }, []);
+  }, [reducedMotion]);
 
   const options = useMemo(() => ({
     fpsLimit: 60,
     fullScreen: { enable: false },
     particles: {
-      number: { value: 90, density: { enable: true } },
+      number: { value: reducedMotion ? 45 : 90, density: { enable: true } },
       color: { value: "#9d00ff" },
       links: {
         color: "#9d00ff",
@@ -74,7 +86,7 @@ export default function HeroParticles() {
         width: 1.2,
       },
       move: {
-        enable: true,
+        enable: !reducedMotion,
         speed: 1.2,
         outModes: { default: "bounce" },
       },
@@ -85,14 +97,14 @@ export default function HeroParticles() {
     },
     interactivity: {
       events: {
-        onHover: { enable: true, mode: "attract" },
+        onHover: { enable: !reducedMotion, mode: "attract" },
       },
       modes: {
         attract: { distance: 250, duration: 0.3, speed: 6 },
       },
     },
     detectRetina: true,
-  }), []);
+  }), [reducedMotion]);
 
   return (
     <ParticlesProvider init={initEngine}>
