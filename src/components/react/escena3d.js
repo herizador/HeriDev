@@ -1,26 +1,115 @@
-import {
-  AdditiveBlending,
-  Color,
-  EdgesGeometry,
-  Group,
-  IcosahedronGeometry,
-  LineBasicMaterial,
-  LineSegments,
-  PerspectiveCamera,
-  Points,
-  PointsMaterial,
-  Scene,
-  WebGLRenderer,
-} from "three";
+import { Camera, Color, Geometry, Mesh, Program, Renderer, Transform } from "ogl";
 
-const COLOR_MORADO = 0x9d00ff;
-const COLOR_MORADO_CLARO = 0x6d288c;
+const MORADO = 0x9d00ff;
+const MORADO_CLARO = 0x6d288c;
+
+const RADIO = 1.45;
+const ESCALA_HALO = 2.05 / RADIO;
+
+const VERTEX = /* glsl */ `
+  attribute vec3 position;
+  uniform mat4 modelViewMatrix;
+  uniform mat4 projectionMatrix;
+  uniform float uSize;
+
+  void main() {
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    gl_PointSize = uSize;
+  }
+`;
+
+const FRAGMENT = /* glsl */ `
+  precision highp float;
+  uniform vec3 uColor;
+  uniform float uOpacity;
+
+  void main() {
+    gl_FragColor = vec4(uColor, uOpacity);
+  }
+`;
 
 /**
- * Monta la escena Three.js dentro de `host` y devuelve una función de limpieza.
+ * Icosaedro geodésico de `detalle` subdivisiones, normalizado a la esfera.
+ * Devuelve las posiciones de los vértices y las aristas ya duplicadas, para
+ * poder dibujarlas con `gl.LINES` sin buffers de índices.
+ */
+function icosaedro(radio, detalle) {
+  const t = (1 + Math.sqrt(5)) / 2;
+  const bruto = [
+    [-1, t, 0], [1, t, 0], [-1, -t, 0], [1, -t, 0],
+    [0, -1, t], [0, 1, t], [0, -1, -t], [0, 1, -t],
+    [t, 0, -1], [t, 0, 1], [-t, 0, -1], [-t, 0, 1],
+  ];
+
+  const posiciones = bruto.map(([x, y, z]) => {
+    const largo = Math.hypot(x, y, z);
+    return [(x / largo) * radio, (y / largo) * radio, (z / largo) * radio];
+  });
+
+  let triangulos = [
+    [0, 11, 5], [0, 5, 1], [0, 1, 7], [0, 7, 10], [0, 10, 11],
+    [1, 5, 9], [5, 11, 4], [11, 10, 2], [10, 7, 6], [7, 1, 8],
+    [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9],
+    [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1],
+  ];
+
+  for (let d = 0; d < detalle; d++) {
+    const cache = new Map();
+
+    const puntoMedio = (i, j) => {
+      const clave = i < j ? i + ":" + j : j + ":" + i;
+      const guardado = cache.get(clave);
+      if (guardado !== undefined) return guardado;
+
+      const a = posiciones[i];
+      const b = posiciones[j];
+      const x = (a[0] + b[0]) / 2;
+      const y = (a[1] + b[1]) / 2;
+      const z = (a[2] + b[2]) / 2;
+      const largo = Math.hypot(x, y, z) || 1;
+
+      const indice = posiciones.length;
+      posiciones.push([(x / largo) * radio, (y / largo) * radio, (z / largo) * radio]);
+      cache.set(clave, indice);
+      return indice;
+    };
+
+    const siguientes = [];
+    for (const [a, b, c] of triangulos) {
+      const ab = puntoMedio(a, b);
+      const bc = puntoMedio(b, c);
+      const ca = puntoMedio(c, a);
+      siguientes.push([a, ab, ca], [b, bc, ab], [c, ca, bc], [ab, bc, ca]);
+    }
+    triangulos = siguientes;
+  }
+
+  const aristasVistas = new Set();
+  const aristas = [];
+  for (const [a, b, c] of triangulos) {
+    for (const [i, j] of [[a, b], [b, c], [c, a]]) {
+      const clave = i < j ? i + ":" + j : j + ":" + i;
+      if (aristasVistas.has(clave)) continue;
+      aristasVistas.add(clave);
+      aristas.push(...posiciones[i], ...posiciones[j]);
+    }
+  }
+
+  const vertices = new Float32Array(posiciones.length * 3);
+  posiciones.forEach((p, i) => {
+    vertices[i * 3] = p[0];
+    vertices[i * 3 + 1] = p[1];
+    vertices[i * 3 + 2] = p[2];
+  });
+
+  return { vertices, aristas: new Float32Array(aristas) };
+}
+
+/**
+ * Monta la escena 3D dentro de `host` y devuelve una función de limpieza.
  *
- * Módulo puro (sin React) a propósito: así Rollup puede eliminar de `three`
- * todo lo que no se usa y el chunk pesa mucho menos.
+ * Módulo puro (sin React) a propósito: así Rollup puede eliminar de OGL todo
+ * lo que no se usa y el chunk se queda en unos pocos kB.
  *
  * - Respeta `prefers-reduced-motion`: dibuja un único fotograma estático.
  * - Pausa el bucle cuando la pestaña está oculta o el canvas sale de pantalla.
@@ -29,16 +118,16 @@ const COLOR_MORADO_CLARO = 0x6d288c;
 export function crearEscena(host, { reduced = false } = {}) {
   let ancho = host.clientWidth || 1;
   let alto = host.clientHeight || 1;
-
-  const scene = new Scene();
-  const camera = new PerspectiveCamera(45, ancho / alto, 0.1, 100);
-  camera.position.z = 5.2;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
   let renderer;
   try {
-    renderer = new WebGLRenderer({
-      antialias: true,
+    renderer = new Renderer({
+      width: ancho,
+      height: alto,
+      dpr,
       alpha: true,
+      antialias: true,
       powerPreference: "high-performance",
     });
   } catch {
@@ -46,47 +135,90 @@ export function crearEscena(host, { reduced = false } = {}) {
     return () => {};
   }
 
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setSize(ancho, alto);
-  renderer.domElement.style.display = "block";
-  host.appendChild(renderer.domElement);
+  const gl = renderer.gl;
+  gl.canvas.style.display = "block";
+  host.appendChild(gl.canvas);
 
-  const esClaro = () => document.documentElement.dataset.theme === "light";
-  const color = new Color(esClaro() ? COLOR_MORADO_CLARO : COLOR_MORADO);
+  const camera = new Camera(gl, { fov: 45, near: 0.1, far: 100 });
+  camera.position.z = 5.2;
+  camera.perspective({ aspect: ancho / alto });
 
-  const group = new Group();
-  scene.add(group);
+  const escena = new Transform();
 
-  // Núcleo: icosaedro en alambre + puntos en sus vértices.
-  const geoNucleo = new IcosahedronGeometry(1.45, 1);
-  const geoAristas = new EdgesGeometry(geoNucleo);
+  // Un único objeto Color compartido: cambiar el tema recolorea las tres mallas.
+  const color = new Color(esClaro() ? MORADO_CLARO : MORADO);
 
-  const matLineas = new LineBasicMaterial({ color, transparent: true, opacity: 0.9 });
-  const lineas = new LineSegments(geoAristas, matLineas);
-  group.add(lineas);
+  const { vertices, aristas } = icosaedro(RADIO, 1);
+  const geoAristas = new Geometry(gl, { position: { size: 3, data: aristas } });
+  const geoVertices = new Geometry(gl, { position: { size: 3, data: vertices } });
 
-  const matPuntos = new PointsMaterial({
-    color,
-    size: 0.075,
+  const programaLineas = new Program(gl, {
+    vertex: VERTEX,
+    fragment: FRAGMENT,
+    uniforms: {
+      uColor: { value: color },
+      uOpacity: { value: 0.9 },
+      uSize: { value: 1 },
+    },
     transparent: true,
-    opacity: 0.95,
+    depthTest: false,
   });
-  const puntos = new Points(geoNucleo, matPuntos);
-  group.add(puntos);
 
-  // Halo exterior, más tenue y con blending aditivo.
-  const geoHaloBase = new IcosahedronGeometry(2.05, 1);
-  const geoHalo = new EdgesGeometry(geoHaloBase);
-  geoHaloBase.dispose();
-  const matHalo = new LineBasicMaterial({
-    color,
+  const programaVertices = new Program(gl, {
+    vertex: VERTEX,
+    fragment: FRAGMENT,
+    uniforms: {
+      uColor: { value: color },
+      uOpacity: { value: 0.95 },
+      uSize: { value: 3 * dpr },
+    },
     transparent: true,
-    opacity: 0.16,
-    blending: AdditiveBlending,
-    depthWrite: false,
+    depthTest: false,
   });
-  const halo = new LineSegments(geoHalo, matHalo);
-  group.add(halo);
+
+  const programaHalo = new Program(gl, {
+    vertex: VERTEX,
+    fragment: FRAGMENT,
+    uniforms: {
+      uColor: { value: color },
+      uOpacity: { value: 0.16 },
+      uSize: { value: 1 },
+    },
+    transparent: true,
+    depthTest: false,
+  });
+
+  const nucleo = new Transform();
+  nucleo.setParent(escena);
+
+  const mallaLineas = new Mesh(gl, {
+    geometry: geoAristas,
+    program: programaLineas,
+    mode: gl.LINES,
+    frustumCulled: false,
+  });
+  mallaLineas.setParent(nucleo);
+
+  const mallaVertices = new Mesh(gl, {
+    geometry: geoVertices,
+    program: programaVertices,
+    mode: gl.POINTS,
+    frustumCulled: false,
+  });
+  mallaVertices.setParent(nucleo);
+
+  // El halo reutiliza los mismos buffers, solo cambia la escala y la opacidad.
+  const halo = new Transform();
+  halo.scale.set(ESCALA_HALO, ESCALA_HALO, ESCALA_HALO);
+  halo.setParent(escena);
+
+  const mallaHalo = new Mesh(gl, {
+    geometry: geoAristas,
+    program: programaHalo,
+    mode: gl.LINES,
+    frustumCulled: false,
+  });
+  mallaHalo.setParent(halo);
 
   // --- Interacción: la figura se inclina hacia el cursor, con amortiguación ---
   const objetivo = { x: 0, y: 0 };
@@ -105,6 +237,10 @@ export function crearEscena(host, { reduced = false } = {}) {
   let ultimo = 0;
   let enPantalla = true;
 
+  const pintar = () => {
+    renderer.render({ scene: escena, camera });
+  };
+
   const tick = (tiempo) => {
     raf = requestAnimationFrame(tick);
     const dt = Math.min((tiempo - ultimo) / 1000 || 0, 0.05);
@@ -114,12 +250,12 @@ export function crearEscena(host, { reduced = false } = {}) {
     actual.x += (objetivo.x - actual.x) * 0.045;
     actual.y += (objetivo.y - actual.y) * 0.045;
 
-    group.rotation.y = autoY + actual.x;
-    group.rotation.x = actual.y * 0.75;
+    nucleo.rotation.y = autoY + actual.x;
+    nucleo.rotation.x = actual.y * 0.75;
     halo.rotation.y = -autoY * 0.45;
     halo.rotation.z = autoY * 0.2;
 
-    renderer.render(scene, camera);
+    pintar();
 
     // La figura aparece en cuanto hay un fotograma real dibujado.
     if (host.style.opacity !== "1") host.style.opacity = "1";
@@ -143,11 +279,8 @@ export function crearEscena(host, { reduced = false } = {}) {
   };
 
   const onThemeChange = () => {
-    const hex = esClaro() ? COLOR_MORADO_CLARO : COLOR_MORADO;
-    matLineas.color.setHex(hex);
-    matPuntos.color.setHex(hex);
-    matHalo.color.setHex(hex);
-    if (reduced) renderer.render(scene, camera);
+    color.set(esClaro() ? MORADO_CLARO : MORADO);
+    if (reduced) pintar();
   };
 
   const io = new IntersectionObserver(
@@ -166,10 +299,9 @@ export function crearEscena(host, { reduced = false } = {}) {
     if (!w || !h) return;
     ancho = w;
     alto = h;
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
+    camera.perspective({ aspect: w / h });
     renderer.setSize(w, h);
-    if (reduced) renderer.render(scene, camera);
+    if (reduced) pintar();
   });
   ro.observe(host);
 
@@ -181,7 +313,7 @@ export function crearEscena(host, { reduced = false } = {}) {
   // cuando ya hay un fotograma dibujado. Sin animación si se pide movimiento reducido.
   if (reduced) {
     // Fotograma único: la figura se ve, pero no se mueve.
-    renderer.render(scene, camera);
+    pintar();
     host.style.opacity = "1";
   } else {
     host.style.transition = "opacity 900ms ease";
@@ -196,16 +328,20 @@ export function crearEscena(host, { reduced = false } = {}) {
     io.disconnect();
     ro.disconnect();
 
-    geoNucleo.dispose();
-    geoAristas.dispose();
-    geoHalo.dispose();
-    matLineas.dispose();
-    matPuntos.dispose();
-    matHalo.dispose();
-    renderer.dispose();
+    geoAristas.remove();
+    geoVertices.remove();
+    programaLineas.remove();
+    programaVertices.remove();
+    programaHalo.remove();
 
-    if (renderer.domElement.parentNode === host) {
-      host.removeChild(renderer.domElement);
-    }
+    // Libera el contexto WebGL en cuanto se desmonta la isla.
+    const perderContexto = gl.getExtension("WEBGL_lose_context");
+    if (perderContexto) perderContexto.loseContext();
+
+    if (gl.canvas.parentNode === host) host.removeChild(gl.canvas);
   };
+}
+
+function esClaro() {
+  return document.documentElement.dataset.theme === "light";
 }

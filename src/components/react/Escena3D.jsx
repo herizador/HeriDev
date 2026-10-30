@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Isla decorativa del hero: figura 3D en Three.js.
+ * Isla decorativa del hero: figura 3D con OGL (WebGL, ~15 kB).
  *
- * Se hidrata con `client:idle`, pero el código de Three.js se importa en
+ * Se hidrata con `client:idle`, pero el código de la escena se importa en
  * dinámico y **solo si la pantalla es de escritorio**, así que en móvil y
  * tablet no se descarga la librería (ni se crea ningún contexto WebGL).
  * El contenedor es `aria-hidden` y `pointer-events-none`: no aporta
@@ -19,7 +19,7 @@ export default function Escena3D() {
     // Mismo breakpoint que la clase `xl:` de Tailwind.
     if (!window.matchMedia("(min-width: 1280px)").matches) return;
 
-    // Ahorro de datos activado: no descargamos ~130 kB de Three.js para un adorno.
+    // Ahorro de datos activado: no descargamos la librería 3D para un adorno.
     if (navigator.connection && navigator.connection.saveData) return;
 
     let activo = true;
