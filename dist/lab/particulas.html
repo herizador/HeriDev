@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="color-scheme" content="dark" />
+    <title>Laboratorio · Partículas 3D — HeriDev</title>
+    <style>
+      :root {
+        --fondo: #05050a;
+        --morado: #9d00ff;
+        --texto: #e0e0e0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: var(--fondo);
+        color: var(--texto);
+        font-family: "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      /* El lienzo ocupa todo el viewport, sin scroll ni barras. */
+      #lienzo {
+        display: block;
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .hud {
+        position: fixed;
+        left: 1.25rem;
+        bottom: 1.25rem;
+        z-index: 2;
+        max-width: min(28rem, calc(100vw - 2.5rem));
+        padding: 0.9rem 1.1rem;
+        border: 1px solid rgb(157 0 255 / 0.3);
+        border-radius: 0.6rem;
+        background: rgb(5 5 10 / 0.65);
+        backdrop-filter: blur(6px);
+        font-size: 0.72rem;
+        line-height: 1.7;
+        letter-spacing: 0.02em;
+        color: rgb(224 224 224 / 0.72);
+        pointer-events: none;
+      }
+
+      .hud b {
+        color: var(--morado);
+        font-weight: 600;
+      }
+
+      .hud kbd {
+        padding: 0.05rem 0.35rem;
+        border: 1px solid rgb(157 0 255 / 0.4);
+        border-radius: 0.25rem;
+        font: inherit;
+        color: var(--texto);
+      }
+
+      .volver {
+        position: fixed;
+        top: 1.25rem;
+        left: 1.25rem;
+        z-index: 2;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgb(224 224 224 / 0.55);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .volver:hover,
+      .volver:focus-visible {
+        color: var(--morado);
+      }
+
+      .aviso {
+        position: fixed;
+        inset: 0;
+        z-index: 3;
+        display: none;
+        place-content: center;
+        padding: 2rem;
+        text-align: center;
+        font-size: 0.85rem;
+        color: rgb(224 224 224 / 0.7);
+      }
+
+      .aviso.visible {
+        display: grid;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .volver {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="lienzo"></canvas>
+
+    <a class="volver" href="/">← volver</a>
+
+    <div class="hud">
+      <b>15 000 partículas</b> · THREE.Points<br />
+      esfera ⇄ nudo de toro · morph en vertex shader<br />
+      AdditiveBlending · depthWrite: false<br />
+      mueve el ratón para <b>repeler</b> las partículas
+    </div>
+
+    <p class="aviso" id="aviso">
+      Este navegador no puede crear un contexto WebGL.<br />
+      Prueba en Chrome o Edge con la aceleración por hardware activada.
+    </p>
+
+    <!-- Three.js vía CDN: el laboratorio no toca el bundle del portfolio. -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.187.0/build/three.module.js"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+
+      // --- Ajustes ---------------------------------------------------------
+      const NUM_PARTICULAS = 15000;
+      const RADIO_REPULSION = 0.22; // en unidades NDC
+      const FUERZA_REPULSION = 0.5;
+      const MORADO = 0x9d00ff;
+      const CIAN = 0x4de3ff;
+
+      const lienzo = document.getElementById("lienzo");
+      const aviso = document.getElementById("aviso");
+      const reducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      // --- 1. Dos formas: esfera y nudo de toro ------------------------------
+      function formaEsfera(n) {
+        const posiciones = new Float32Array(n * 3);
+        const incremento = Math.PI * (3 - Math.sqrt(5)); // espiral de Fibonacci
+        const radio = 2.1;
+
+        for (let i = 0; i < n; i++) {
+          const y = 1 - (i / (n - 1)) * 2;
+          const r = Math.sqrt(Math.max(0, 1 - y * y));
+          const angulo = incremento * i;
+
+          posiciones[i * 3] = Math.cos(angulo) * r * radio;
+          posiciones[i * 3 + 1] = y * radio;
+          posiciones[i * 3 + 2] = Math.sin(angulo) * r * radio;
+        }
+
+        return posiciones;
+      }
+
+      function formaNudo(n) {
+        const posiciones = new Float32Array(n * 3);
+        const escala = 0.85;
+
+        for (let i = 0; i < n; i++) {
+          const u = (i / n) * Math.PI * 2;
+
+          // Nudo de toro (2, 3): el trébol.
+          const r = 2 + Math.cos(3 * u);
+          const x = r * Math.cos(2 * u);
+          const y = Math.sin(3 * u);
+          const z = r * Math.sin(2 * u);
+
+          // Grosor del tubo: desplazamiento aleatorio dentro de una esfera.
+          const azimut = Math.random() * Math.PI * 2;
+          const polar = Math.acos(2 * Math.random() - 1);
+          const grosor = Math.cbrt(Math.random()) * 0.22;
+
+          posiciones[i * 3] = x * escala + Math.sin(polar) * Math.cos(azimut) * grosor;
+          posiciones[i * 3 + 1] = y * escala + Math.cos(polar) * grosor;
+          posiciones[i * 3 + 2] = z * escala + Math.sin(polar) * Math.sin(azimut) * grosor;
+        }
+
+        return posiciones;
+      }
+
+      // --- 2. Shaders -------------------------------------------------------
+      const VERTEX = /* glsl */ `
+        uniform float uTiempo;
+        uniform float uProgreso;
+        uniform vec2 uRaton;
+        uniform float uAspecto;
+        uniform float uPixelRatio;
+        uniform float uRadio;
+
+        attribute vec3 aObjetivo;
+        attribute vec3 aAleatorio;
+        attribute float aTamano;
+
+        varying float vCalor;
+
+        void main() {
+          // 1. Morfismo: cada partícula arranca con un desfase según su aleatorio,
+          //    así la transición no es un bloque uniforme.
+          float retardo = aAleatorio.x * 0.35;
+          float t = clamp((uProgreso - retardo) / (1.0 - 0.35), 0.0, 1.0);
+          t = t * t * (3.0 - 2.0 * t);
+
+          vec3 posicion = mix(position, aObjetivo, t);
+
+          // 2. Deriva orgánica: la nube nunca está completamente quieta.
+          posicion += vec3(
+            sin(uTiempo * 0.8 + aAleatorio.y * 6.2831),
+            cos(uTiempo * 0.7 + aAleatorio.z * 6.2831),
+            sin(uTiempo * 0.6 + aAleatorio.x * 6.2831)
+          ) * 0.045;
+
+          vec4 vista = modelViewMatrix * vec4(posicion, 1.0);
+
+          // 3. Repulsión: distancia al cursor medida en NDC, corregida por aspecto
+          //    para que el radio de influencia sea circular en píxeles.
+          vec4 proyectada = projectionMatrix * vista;
+          vec2 ndc = proyectada.xy / max(proyectada.w, 0.0001);
+          vec2 delta = ndc - uRaton;
+          delta.x *= uAspecto;
+
+          float distancia = length(delta);
+          float fuerza = smoothstep(uRadio, 0.0, distancia);
+          fuerza *= fuerza;
+
+          vista.xy += normalize(delta + vec2(0.0001)) * fuerza * ${FUERZA_REPULSION.toFixed(2)};
+
+          // 4. Proyección final, con atenuación por distancia.
+          gl_Position = projectionMatrix * vista;
+          gl_PointSize = aTamano * uPixelRatio * (300.0 / max(-vista.z, 0.001)) * (1.0 + fuerza * 1.8);
+
+          vCalor = t * 0.7 + fuerza * 0.9;
+        }
+      `;
+
+      const FRAGMENT = /* glsl */ `
+        precision highp float;
+
+        uniform vec3 uColorA;
+        uniform vec3 uColorB;
+
+        varying float vCalor;
+
+        void main() {
+          // Punto redondo y suave: descarta la esquina del quad.
+          float d = length(gl_PointCoord - vec2(0.5));
+          if (d > 0.5) discard;
+
+          float alfa = smoothstep(0.5, 0.05, d);
+          vec3 color = mix(uColorA, uColorB, clamp(vCalor, 0.0, 1.0));
+
+          gl_FragColor = vec4(color, alfa * 0.9);
+        }
+      `;
+
+      // --- 3. Escena --------------------------------------------------------
+      let renderer;
+
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas: lienzo,
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+        });
+      } catch (error) {
+        aviso.classList.add("visible");
+        throw error;
+      }
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      renderer.setPixelRatio(dpr);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      const escena = new THREE.Scene();
+      const camara = new THREE.PerspectiveCamera(
+        55,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        100
+      );
+      camara.position.z = 6.5;
+
+      const geometria = new THREE.BufferGeometry();
+      const aleatorio = new Float32Array(NUM_PARTICULAS * 3);
+      const tamanos = new Float32Array(NUM_PARTICULAS);
+
+      for (let i = 0; i < NUM_PARTICULAS; i++) {
+        aleatorio[i * 3] = Math.random();
+        aleatorio[i * 3 + 1] = Math.random();
+        aleatorio[i * 3 + 2] = Math.random();
+        tamanos[i] = 0.6 + Math.random() * 1.6;
+      }
+
+      geometria.setAttribute("position", new THREE.BufferAttribute(formaEsfera(NUM_PARTICULAS), 3));
+      geometria.setAttribute("aObjetivo", new THREE.BufferAttribute(formaNudo(NUM_PARTICULAS), 3));
+      geometria.setAttribute("aAleatorio", new THREE.BufferAttribute(aleatorio, 3));
+      geometria.setAttribute("aTamano", new THREE.BufferAttribute(tamanos, 1));
+
+      const uniformes = {
+        uTiempo: { value: 0 },
+        uProgreso: { value: 0 },
+        uRaton: { value: new THREE.Vector2(999, 999) },
+        uAspecto: { value: window.innerWidth / window.innerHeight },
+        uPixelRatio: { value: dpr },
+        uRadio: { value: RADIO_REPULSION },
+        uColorA: { value: new THREE.Color(MORADO) },
+        uColorB: { value: new THREE.Color(CIAN) },
+      };
+
+      const material = new THREE.ShaderMaterial({
+        uniforms: uniformes,
+        vertexShader: VERTEX,
+        fragmentShader: FRAGMENT,
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      });
+
+      const puntos = new THREE.Points(geometria, material);
+      escena.add(puntos);
+
+      // --- 4. Ratón: Vector2 en coordenadas normalizadas (-1 .. 1) -----------
+      const ratonObjetivo = new THREE.Vector2(999, 999);
+
+      function onPointerMove(evento) {
+        ratonObjetivo.set(
+          (evento.clientX / window.innerWidth) * 2 - 1,
+          -(evento.clientY / window.innerHeight) * 2 + 1
+        );
+      }
+
+      window.addEventListener("pointermove", onPointerMove, { passive: true });
+
+      // --- 5. Bucle ---------------------------------------------------------
+      // performance.now() en vez de THREE.Clock (deprecado en r187).
+      const inicio = performance.now();
+      let raf = 0;
+      let activo = true;
+
+      function dibujar() {
+        const tiempo = (performance.now() - inicio) / 1000;
+
+        // Morph continuo con suavizado: 0 (esfera) -> 1 (nudo) -> 0.
+        const bruto = (Math.sin(tiempo * 0.45 - Math.PI / 2) + 1) / 2;
+        uniformes.uProgreso.value = bruto * bruto * (3 - 2 * bruto);
+        uniformes.uTiempo.value = tiempo;
+
+        // Amortiguación del cursor para que la repulsión no salte.
+        uniformes.uRaton.value.lerp(ratonObjetivo, 0.12);
+
+        renderer.render(escena, camara);
+      }
+
+      function bucle() {
+        if (!activo) return;
+        raf = requestAnimationFrame(bucle);
+        dibujar();
+      }
+
+      function onVisibilityChange() {
+        if (document.hidden) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        } else if (!reducido && !raf) {
+          bucle();
+        }
+      }
+
+      function onResize() {
+        const ancho = window.innerWidth;
+        const alto = window.innerHeight;
+
+        camara.aspect = ancho / alto;
+        camara.updateProjectionMatrix();
+        renderer.setSize(ancho, alto);
+
+        uniformes.uAspecto.value = ancho / alto;
+        uniformes.uPixelRatio.value = Math.min(window.devicePixelRatio || 1, 2);
+
+        // Con movimiento reducido no hay bucle: repintamos el fotograma estático.
+        if (reducido) renderer.render(escena, camara);
+      }
+
+      window.addEventListener("resize", onResize);
+      document.addEventListener("visibilitychange", onVisibilityChange);
+
+      if (reducido) {
+        // Un único fotograma, a medio morph, sin repulsión ni deriva animada.
+        uniformes.uProgreso.value = 0.35;
+        uniformes.uRadio.value = 0;
+        renderer.render(escena, camara);
+      } else {
+        bucle();
+      }
+
+      // Limpieza por si algún día esto se monta dentro de una SPA.
+      window.addEventListener("pagehide", () => {
+        activo = false;
+        cancelAnimationFrame(raf);
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("resize", onResize);
+        document.removeEventListener("visibilitychange", onVisibilityChange);
+        geometria.dispose();
+        material.dispose();
+        renderer.dispose();
+      });
+    </script>
+  </body>
+</html>

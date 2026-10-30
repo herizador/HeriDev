@@ -219,7 +219,7 @@ const contactos = [
     <div aria-hidden="true" class="hero-glow absolute top-1/4 left-1/2 -translate-x-1/2 z-[1] w-[42rem] max-w-full h-[22rem]"></div>
     <div data-fx="hero" class="relative z-10 w-full max-w-6xl mx-auto pt-24 px-4">
       <!-- Decorativo: solo se descarga en escritorio y con movimiento permitido. -->
-      <Escena3D client:idle />
+      <Escena3D client:idle className="absolute right-0 top-1/2 -z-10 hidden h-[320px] w-[320px] -translate-y-1/2 xl:block" />
       <div class="w-full">
         <p class="mb-4 inline-flex items-center gap-2 rounded-full border border-morado/30 bg-morado/10 px-4 py-1.5 text-xs tracking-wider text-morado">
           <span class="relative flex h-2 w-2">
@@ -542,11 +542,12 @@ const contactos = [
   </section>
 
   <section id="joyas" class="mb-24">
-    <div class="mb-2 flex items-center gap-3">
+    <div class="relative mb-2 flex items-center gap-3">
       <h2 class="shrink-0 text-2xl font-semibold text-white">
         <span class="text-morado">#</span> Las Joyas de la Corona
       </h2>
       <span aria-hidden="true" class="fx-rule h-px flex-1 bg-gradient-to-r from-morado/50 to-transparent"></span>
+      <Escena3D client:idle variante="joya" className="absolute right-0 top-1/2 hidden h-[112px] w-[112px] -translate-y-1/2 xl:block" />
     </div>
     <p class="tw tw-s-joyas mb-8 text-sm text-texto/50">
       Proyectos estrella que definen mi stack y filosofía de desarrollo.

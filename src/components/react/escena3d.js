@@ -3,8 +3,52 @@ import { Camera, Color, Geometry, Mesh, Program, Renderer, Transform } from "ogl
 const MORADO = 0x9d00ff;
 const MORADO_CLARO = 0x6d288c;
 
-const RADIO = 1.45;
-const ESCALA_HALO = 2.05 / RADIO;
+const VERTICES_ICOSAEDRO = [
+  [-1, 1.618, 0], [1, 1.618, 0], [-1, -1.618, 0], [1, -1.618, 0],
+  [0, -1, 1.618], [0, 1, 1.618], [0, -1, -1.618], [0, 1, -1.618],
+  [1.618, 0, -1], [1.618, 0, 1], [-1.618, 0, -1], [-1.618, 0, 1],
+];
+
+const CARAS_ICOSAEDRO = [
+  [0, 11, 5], [0, 5, 1], [0, 1, 7], [0, 7, 10], [0, 10, 11],
+  [1, 5, 9], [5, 11, 4], [11, 10, 2], [10, 7, 6], [7, 1, 8],
+  [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9],
+  [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1],
+];
+
+const VERTICES_OCTAEDRO = [
+  [1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1],
+];
+
+const CARAS_OCTAEDRO = [
+  [0, 2, 4], [2, 1, 4], [1, 3, 4], [3, 0, 4],
+  [2, 0, 5], [1, 2, 5], [3, 1, 5], [0, 3, 5],
+];
+
+/**
+ * Formas disponibles. Cada una cambia la geometría, el encuadre y el carácter
+ * del giro, pero comparten el mismo renderer y los mismos shaders.
+ */
+const FORMAS = {
+  hero: {
+    vertices: VERTICES_ICOSAEDRO,
+    caras: CARAS_ICOSAEDRO,
+    radio: 1.45,
+    detalle: 1,
+    escalaHalo: 2.05 / 1.45,
+    giro: 1,
+    inclinacion: 1,
+  },
+  joya: {
+    vertices: VERTICES_OCTAEDRO,
+    caras: CARAS_OCTAEDRO,
+    radio: 1.55,
+    detalle: 1,
+    escalaHalo: 1.34,
+    giro: 1.7,
+    inclinacion: 0.65,
+  },
+};
 
 const VERTEX = /* glsl */ `
   attribute vec3 position;
@@ -29,29 +73,17 @@ const FRAGMENT = /* glsl */ `
 `;
 
 /**
- * Icosaedro geodésico de `detalle` subdivisiones, normalizado a la esfera.
+ * Poliedro geodésico de `detalle` subdivisiones, normalizado a la esfera.
  * Devuelve las posiciones de los vértices y las aristas ya duplicadas, para
  * poder dibujarlas con `gl.LINES` sin buffers de índices.
  */
-function icosaedro(radio, detalle) {
-  const t = (1 + Math.sqrt(5)) / 2;
-  const bruto = [
-    [-1, t, 0], [1, t, 0], [-1, -t, 0], [1, -t, 0],
-    [0, -1, t], [0, 1, t], [0, -1, -t], [0, 1, -t],
-    [t, 0, -1], [t, 0, 1], [-t, 0, -1], [-t, 0, 1],
-  ];
-
-  const posiciones = bruto.map(([x, y, z]) => {
-    const largo = Math.hypot(x, y, z);
+function poliedro({ vertices, caras }, radio, detalle) {
+  const posiciones = vertices.map(([x, y, z]) => {
+    const largo = Math.hypot(x, y, z) || 1;
     return [(x / largo) * radio, (y / largo) * radio, (z / largo) * radio];
   });
 
-  let triangulos = [
-    [0, 11, 5], [0, 5, 1], [0, 1, 7], [0, 7, 10], [0, 10, 11],
-    [1, 5, 9], [5, 11, 4], [11, 10, 2], [10, 7, 6], [7, 1, 8],
-    [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9],
-    [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1],
-  ];
+  let triangulos = caras;
 
   for (let d = 0; d < detalle; d++) {
     const cache = new Map();
@@ -95,14 +127,14 @@ function icosaedro(radio, detalle) {
     }
   }
 
-  const vertices = new Float32Array(posiciones.length * 3);
+  const puntos = new Float32Array(posiciones.length * 3);
   posiciones.forEach((p, i) => {
-    vertices[i * 3] = p[0];
-    vertices[i * 3 + 1] = p[1];
-    vertices[i * 3 + 2] = p[2];
+    puntos[i * 3] = p[0];
+    puntos[i * 3 + 1] = p[1];
+    puntos[i * 3 + 2] = p[2];
   });
 
-  return { vertices, aristas: new Float32Array(aristas) };
+  return { vertices: puntos, aristas: new Float32Array(aristas) };
 }
 
 /**
@@ -111,11 +143,14 @@ function icosaedro(radio, detalle) {
  * Módulo puro (sin React) a propósito: así Rollup puede eliminar de OGL todo
  * lo que no se usa y el chunk se queda en unos pocos kB.
  *
+ * - `variante`: "hero" (icosaedro) o "joya" (octaedro).
  * - Respeta `prefers-reduced-motion`: dibuja un único fotograma estático.
  * - Pausa el bucle cuando la pestaña está oculta o el canvas sale de pantalla.
  * - Se recolorea al cambiar entre tema claro y oscuro.
  */
-export function crearEscena(host, { reduced = false } = {}) {
+export function crearEscena(host, { reduced = false, variante = "hero" } = {}) {
+  const forma = FORMAS[variante] ?? FORMAS.hero;
+
   let ancho = host.clientWidth || 1;
   let alto = host.clientHeight || 1;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -148,7 +183,10 @@ export function crearEscena(host, { reduced = false } = {}) {
   // Un único objeto Color compartido: cambiar el tema recolorea las tres mallas.
   const color = new Color(esClaro() ? MORADO_CLARO : MORADO);
 
-  const { vertices, aristas } = icosaedro(RADIO, 1);
+  // Los puntos se encogen en lienzos pequeños para que la densidad se parezca.
+  const tamanoPunto = (w, h) => Math.max(0.6, Math.min(w, h) / 320) * 3 * dpr;
+
+  const { vertices, aristas } = poliedro(forma, forma.radio, forma.detalle);
   const geoAristas = new Geometry(gl, { position: { size: 3, data: aristas } });
   const geoVertices = new Geometry(gl, { position: { size: 3, data: vertices } });
 
@@ -170,7 +208,7 @@ export function crearEscena(host, { reduced = false } = {}) {
     uniforms: {
       uColor: { value: color },
       uOpacity: { value: 0.95 },
-      uSize: { value: 3 * dpr },
+      uSize: { value: tamanoPunto(ancho, alto) },
     },
     transparent: true,
     depthTest: false,
@@ -209,7 +247,7 @@ export function crearEscena(host, { reduced = false } = {}) {
 
   // El halo reutiliza los mismos buffers, solo cambia la escala y la opacidad.
   const halo = new Transform();
-  halo.scale.set(ESCALA_HALO, ESCALA_HALO, ESCALA_HALO);
+  halo.scale.set(forma.escalaHalo, forma.escalaHalo, forma.escalaHalo);
   halo.setParent(escena);
 
   const mallaHalo = new Mesh(gl, {
@@ -246,12 +284,12 @@ export function crearEscena(host, { reduced = false } = {}) {
     const dt = Math.min((tiempo - ultimo) / 1000 || 0, 0.05);
     ultimo = tiempo;
 
-    autoY += dt * 0.22;
+    autoY += dt * 0.22 * forma.giro;
     actual.x += (objetivo.x - actual.x) * 0.045;
     actual.y += (objetivo.y - actual.y) * 0.045;
 
     nucleo.rotation.y = autoY + actual.x;
-    nucleo.rotation.x = actual.y * 0.75;
+    nucleo.rotation.x = actual.y * 0.75 * forma.inclinacion;
     halo.rotation.y = -autoY * 0.45;
     halo.rotation.z = autoY * 0.2;
 
@@ -301,6 +339,7 @@ export function crearEscena(host, { reduced = false } = {}) {
     alto = h;
     camera.perspective({ aspect: w / h });
     renderer.setSize(w, h);
+    programaVertices.uniforms.uSize.value = tamanoPunto(w, h);
     if (reduced) pintar();
   });
   ro.observe(host);
