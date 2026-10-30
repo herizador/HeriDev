@@ -5,6 +5,7 @@ import Icon from "../components/astro/Icon.astro";
 import Terminal from "../components/react/Terminal.jsx";
 import HeroParticles from "../components/react/HeroParticles.jsx";
 import ScrollFX from "../components/react/ScrollFX.jsx";
+import Escena3D from "../components/react/Escena3D.jsx";
 import { getRepos } from "../services/github";
 
 const repos = await getRepos();
@@ -217,6 +218,8 @@ const contactos = [
     <div aria-hidden="true" class="hero-mask absolute top-0 left-0 z-[1] w-full h-screen"></div>
     <div aria-hidden="true" class="hero-glow absolute top-1/4 left-1/2 -translate-x-1/2 z-[1] w-[42rem] max-w-full h-[22rem]"></div>
     <div data-fx="hero" class="relative z-10 w-full max-w-6xl mx-auto pt-24 px-4">
+      <!-- Decorativo: solo se descarga en escritorio y con movimiento permitido. -->
+      <Escena3D client:idle />
       <div class="w-full">
         <p class="mb-4 inline-flex items-center gap-2 rounded-full border border-morado/30 bg-morado/10 px-4 py-1.5 text-xs tracking-wider text-morado">
           <span class="relative flex h-2 w-2">
