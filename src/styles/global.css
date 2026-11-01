@@ -21,11 +21,6 @@
   to { clip-path: inset(0 0 0 0); }
 }
 
-@keyframes tw-terminal {
-  from { max-width: 0; border-color: #9d00ff; }
-  to { max-width: 100%; border-color: transparent; }
-}
-
 @keyframes blink-cursor {
   0%, 30% { border-color: #9d00ff; }
   30%, 100% { border-color: transparent; }
@@ -369,33 +364,21 @@ section[id]:target {
   pointer-events: none;
 }
 
-/* ---- Vitrina de Las Joyas: capítulos atados al scroll (sticky, sin pin) ----
-   Por defecto (móvil, sin JS o con movimiento reducido) los tres capítulos son
-   tarjetas normales. ScrollFX añade `.vitrina--activa` y `data-capitulo` solo
-   cuando puede animar: entonces el escenario se queda fijo, la joya gira con el
-   progreso y los capítulos se relevan. */
-.vitrina {
-  --vitrina: 0;
+/* ---- Escenarios de pasos: una sección sticky que avanza con el scroll ----
+   Misma mecánica para joyas, terminal, trayectoria y GitHub: `ScrollFX` añade
+   `.pasos--activo`, escribe `--paso` (0–1) y marca `data-paso`. Los grupos se
+   relevan con `data-grupo`. En móvil, sin JS o con movimiento reducido no hay
+   escenario: los grupos se leen seguidos, como tarjetas o listas normales. */
+.pasos {
+  --paso: 0;
   position: relative;
 }
 
-.vitrina-textos {
-  display: grid;
-  gap: 1rem;
+.pasos-grupo {
+  min-width: 0;
 }
 
-.vitrina-capitulo {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.75rem;
-  padding: 1.5rem;
-  border: 1px solid rgb(var(--color-gris));
-  border-radius: 0.75rem;
-  background: rgb(var(--color-fondo) / 0.6);
-}
-
-.vitrina-indice {
+.pasos-indice {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -405,11 +388,11 @@ section[id]:target {
   color: rgb(var(--color-morado));
 }
 
-.vitrina-total {
+.pasos-total {
   color: rgb(var(--color-texto) / 0.35);
 }
 
-.vitrina-titulo {
+.pasos-titulo {
   margin: 0;
   font-family: "Anton", "Fira Code", monospace;
   font-size: 2rem;
@@ -420,18 +403,18 @@ section[id]:target {
   color: #ffffff;
 }
 
-[data-theme="light"] .vitrina-titulo {
+[data-theme="light"] .pasos-titulo {
   color: rgb(var(--color-texto));
 }
 
-.vitrina-desc {
+.pasos-desc {
   margin: 0;
   font-size: 0.85rem;
   line-height: 1.7;
   color: rgb(var(--color-texto) / 0.55);
 }
 
-.vitrina-tags {
+.pasos-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -440,7 +423,7 @@ section[id]:target {
   list-style: none;
 }
 
-.vitrina-tags li {
+.pasos-tags li {
   padding: 0.15rem 0.55rem;
   border: 1px solid rgb(var(--color-morado) / 0.35);
   border-radius: 999px;
@@ -448,7 +431,7 @@ section[id]:target {
   color: rgb(var(--color-morado));
 }
 
-.vitrina-cta {
+.pasos-cta {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -462,86 +445,271 @@ section[id]:target {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-.vitrina-cta:hover {
+.pasos-cta:hover {
   background: rgb(var(--color-morado));
   color: #ffffff;
 }
 
 /* La joya y la barra de progreso solo existen en el escenario de escritorio. */
-.vitrina-joya,
-.vitrina-rail {
+.pasos-joya,
+.pasos-rail {
   display: none;
 }
 
 @media (min-width: 1280px) {
-  .vitrina--activa {
-    height: 360vh;
+  .pasos--activo {
+    height: calc(var(--pasos-alto, 3) * 100vh);
   }
 
-  .vitrina--activa .vitrina-stage {
+  .pasos--activo .pasos-stage {
     position: sticky;
     top: 0;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 520px;
-    align-items: center;
-    gap: 3rem;
     height: 100vh;
   }
 
-  .vitrina--activa .vitrina-textos {
+  .pasos--activo .pasos-pista {
     position: relative;
-    display: block;
-    min-height: 24rem;
   }
 
-  .vitrina--activa .vitrina-capitulo {
+  .pasos--activo .pasos-grupo {
     position: absolute;
     inset: 0;
-    justify-content: center;
-    padding: 0;
-    border: 0;
-    background: none;
     opacity: 0;
     translate: 0 28px;
     transition: opacity 0.45s ease, translate 0.45s ease;
     pointer-events: none;
   }
 
-  .vitrina--activa[data-capitulo="0"] .vitrina-capitulo:nth-child(1),
-  .vitrina--activa[data-capitulo="1"] .vitrina-capitulo:nth-child(2),
-  .vitrina--activa[data-capitulo="2"] .vitrina-capitulo:nth-child(3) {
+  .pasos--activo[data-paso="0"] .pasos-grupo[data-grupo="0"],
+  .pasos--activo[data-paso="1"] .pasos-grupo[data-grupo="1"],
+  .pasos--activo[data-paso="2"] .pasos-grupo[data-grupo="2"] {
     opacity: 1;
     translate: 0 0;
     pointer-events: auto;
   }
 
-  .vitrina--activa .vitrina-titulo {
-    font-size: clamp(3rem, 5vw, 4.75rem);
-  }
-
-  .vitrina--activa .vitrina-joya {
-    display: block;
-    width: 520px;
-    height: 520px;
-  }
-
-  .vitrina--activa .vitrina-rail {
+  .pasos--activo .pasos-rail {
     display: block;
     position: absolute;
     left: 0;
-    bottom: 0;
-    width: calc(100% - 520px - 3rem);
+    right: 0;
+    bottom: 2rem;
     height: 1px;
     background: rgb(var(--color-morado) / 0.15);
     overflow: hidden;
   }
 
-  .vitrina--activa .vitrina-rail span {
+  .pasos--activo .pasos-rail span {
     position: absolute;
     inset: 0;
-    transform: scaleX(var(--vitrina));
+    transform: scaleX(var(--paso));
     transform-origin: left center;
     background: linear-gradient(to right, rgb(var(--color-morado)), rgb(var(--color-morado) / 0.2));
+  }
+}
+
+/* --- Variante: Las Joyas de la Corona (texto + joya 3D) --- */
+.pasos--joyas .pasos-pista {
+  display: grid;
+  gap: 1rem;
+}
+
+.pasos--joyas .pasos-grupo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid rgb(var(--color-gris));
+  border-radius: 0.75rem;
+  background: rgb(var(--color-fondo) / 0.6);
+}
+
+@media (min-width: 1280px) {
+  .pasos--joyas {
+    --pasos-alto: 3.6;
+  }
+
+  .pasos--joyas .pasos-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 520px;
+    align-items: center;
+    gap: 3rem;
+  }
+
+  .pasos--joyas .pasos-pista {
+    display: block;
+    min-height: 24rem;
+  }
+
+  .pasos--joyas .pasos-grupo {
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  .pasos--joyas .pasos-titulo {
+    font-size: clamp(3rem, 5vw, 4.75rem);
+  }
+
+  .pasos--joyas .pasos-joya {
+    display: block;
+    width: 520px;
+    height: 520px;
+  }
+
+  .pasos--joyas .pasos-rail {
+    right: auto;
+    width: calc(100% - 520px - 3rem);
+  }
+}
+
+/* --- Variante: Trayectoria (experiencia / educación / certificaciones) --- */
+.pasos--trayectoria .pasos-pista {
+  display: grid;
+  gap: 2.5rem;
+}
+
+.pasos--trayectoria .pasos-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.pasos--trayectoria .pasos-titulo {
+  margin-bottom: 0.25rem;
+}
+
+@media (min-width: 1280px) {
+  .pasos--trayectoria {
+    --pasos-alto: 2.8;
+  }
+
+  .pasos--trayectoria .pasos-stage {
+    display: flex;
+    align-items: center;
+  }
+
+  .pasos--trayectoria .pasos-pista {
+    width: 100%;
+    min-height: 30rem;
+  }
+
+  .pasos--trayectoria .pasos-grupo {
+    justify-content: center;
+    max-width: 68rem;
+    margin-inline: auto;
+  }
+
+  .pasos--trayectoria .pasos-titulo {
+    font-size: clamp(2.5rem, 4vw, 4rem);
+  }
+
+  .pasos--trayectoria .trayectoria-lista {
+    max-width: 42rem;
+  }
+}
+
+/* --- Variante: Nodos de GitHub (grupos de tarjetas) --- */
+.pasos--github .pasos-pista {
+  display: grid;
+  gap: 2.5rem;
+}
+
+.pasos--github .pasos-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+@media (min-width: 1280px) {
+  .pasos--github {
+    --pasos-alto: 2.8;
+  }
+
+  .pasos--github .pasos-stage {
+    display: flex;
+    align-items: center;
+  }
+
+  .pasos--github .pasos-pista {
+    width: 100%;
+    min-height: 30rem;
+  }
+
+  .pasos--github .pasos-grupo {
+    justify-content: center;
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+
+  .pasos--github .pasos-titulo {
+    font-size: clamp(2.5rem, 4vw, 4rem);
+  }
+}
+
+/* --- Variante: Terminal (comandos que se ejecutan por pasos) --- */
+.pasos--terminal .terminal-caja {
+  width: 100%;
+  max-width: 46rem;
+  margin-inline: auto;
+}
+
+/* El cursor parpadea mientras escribe; con movimiento reducido se queda fijo. */
+.terminal-caret {
+  animation: caret-blink 1s step-end infinite;
+}
+
+@keyframes caret-blink {
+  0%, 45% { opacity: 1; }
+  45%, 100% { opacity: 0; }
+}
+
+/* El indicador de comandos solo tiene sentido dentro del escenario. */
+.terminal-pasos {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .pasos--terminal {
+    --pasos-alto: 2.2;
+  }
+
+  .pasos--terminal .pasos-stage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.75rem;
+  }
+
+  .pasos--terminal .pasos-pista {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.75rem;
+  }
+
+  .pasos--terminal .terminal-pasos {
+    display: flex;
+    gap: 1.75rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgb(var(--color-texto) / 0.25);
+  }
+
+  .pasos--terminal[data-paso="0"] .terminal-pasos span:nth-child(1),
+  .pasos--terminal[data-paso="1"] .terminal-pasos span:nth-child(2),
+  .pasos--terminal[data-paso="2"] .terminal-pasos span:nth-child(3) {
+    color: rgb(var(--color-morado));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .terminal-caret {
+    animation: none;
   }
 }
 

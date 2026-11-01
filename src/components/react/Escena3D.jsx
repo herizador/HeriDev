@@ -40,7 +40,7 @@ export default function Escena3D({ variante = "hero", className = "" }) {
         });
     };
 
-    // La vitrina activa el contenedor después de hidratar la isla, así que al
+    // El escenario activa el contenedor después de hidratar la isla, así que al
     // montar puede medir 0 px. Esperamos a que el layout le dé tamaño real.
     if (host.clientWidth && host.clientHeight) {
       montar();

@@ -9,6 +9,18 @@ import Escena3D from "../components/react/Escena3D.jsx";
 import { getRepos } from "../services/github";
 
 const repos = await getRepos();
+
+// Nodos de GitHub: con más de una fila de repos, se agrupan de 4 en 4 para que
+// el escenario de pasos los presente por capítulos (máximo 3 grupos = 12 repos).
+const POR_GRUPO = 4;
+const gruposRepos =
+  repos.length > POR_GRUPO
+    ? Array.from(
+        { length: Math.min(3, Math.ceil(repos.length / POR_GRUPO)) },
+        (_, i) => repos.slice(i * POR_GRUPO, (i + 1) * POR_GRUPO)
+      )
+    : [];
+
 const tokenValido = import.meta.env.GITHUB_TOKEN &&
   import.meta.env.GITHUB_TOKEN !== "undefined" &&
   import.meta.env.GITHUB_TOKEN !== "";
@@ -276,7 +288,21 @@ const contactos = [
       </h2>
       <span aria-hidden="true" class="fx-rule h-px flex-1 bg-gradient-to-r from-morado/50 to-transparent"></span>
     </div>
-    <Terminal client:visible />
+    <!-- En escritorio el terminal se queda fijo y ejecuta los comandos por
+         pasos; en móvil o con movimiento reducido escribe todo de una vez. -->
+    <div class="pasos pasos--terminal" data-escenario="terminal" data-pasos="3">
+      <div class="pasos-stage">
+        <div class="pasos-pista">
+          <Terminal client:visible />
+          <p class="terminal-pasos" aria-hidden="true">
+            <span>01 init</span>
+            <span>02 build</span>
+            <span>03 deploy</span>
+          </p>
+        </div>
+        <div class="pasos-rail" aria-hidden="true"><span /></div>
+      </div>
+    </div>
   </section>
 
   <section id="sobre-mi" class="mb-24">
@@ -461,83 +487,102 @@ const contactos = [
     <p class="tw tw-s-trayectoria mb-8 max-w-2xl text-sm text-texto/50">
       Experiencia, formación y certificaciones. El detalle completo está en mi CV.
     </p>
-    <div class="grid gap-10 lg:grid-cols-2">
-      <div class="min-w-0">
-        <h3 class="mb-6 flex items-center gap-2 text-lg font-semibold text-white">
-          <Icon name="briefcase" class="h-5 w-5 text-morado" />
-          Experiencia
-        </h3>
-        <div class="ml-1">
-          {experiencia.map((e) => (
-            <div class="reveal relative border-l border-morado/25 pb-6 pl-6 last:pb-0">
-              <span aria-hidden="true" class="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full bg-morado shadow-[0_0_12px_rgba(157,0,255,0.8)]"></span>
-              <p class="mb-1 text-xs uppercase tracking-wider text-morado">{e.fecha}</p>
-              <p class="font-semibold t-strong">{e.puesto}</p>
-              <p class="mb-2 text-sm text-texto/60">{e.empresa}</p>
-              <ul class="space-y-1 text-sm leading-relaxed text-texto/70">
-                {e.puntos.map((p) => (
-                  <li class="flex gap-2">
-                    <span aria-hidden="true" class="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-morado/70"></span>
-                    <span>{p}</span>
-                  </li>
-                ))}
-              </ul>
+
+    <!-- Trayectoria: tres capítulos que se suceden en un escenario sticky
+         (experiencia, educación y certificaciones). En móvil, sin JS o con
+         movimiento reducido se leen seguidos, como bloques normales. -->
+    <div class="pasos pasos--trayectoria" data-escenario="trayectoria" data-pasos="3">
+      <div class="pasos-stage">
+        <div class="pasos-pista">
+          <div class="pasos-grupo" data-grupo="0">
+            <p class="pasos-indice">
+              <Icon name="briefcase" class="h-4 w-4" />
+              <span>01</span>
+              <span class="pasos-total">/ 03</span>
+            </p>
+            <h3 class="pasos-titulo">Experiencia</h3>
+            <div class="trayectoria-lista ml-1">
+              {experiencia.map((e) => (
+                <div class="reveal relative border-l border-morado/25 pb-6 pl-6 last:pb-0">
+                  <span aria-hidden="true" class="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full bg-morado shadow-[0_0_12px_rgba(157,0,255,0.8)]"></span>
+                  <p class="mb-1 text-xs uppercase tracking-wider text-morado">{e.fecha}</p>
+                  <p class="font-semibold t-strong">{e.puesto}</p>
+                  <p class="mb-2 text-sm text-texto/60">{e.empresa}</p>
+                  <ul class="space-y-1 text-sm leading-relaxed text-texto/70">
+                    {e.puntos.map((p) => (
+                      <li class="flex gap-2">
+                        <span aria-hidden="true" class="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-morado/70"></span>
+                        <span>{p}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-      <div class="min-w-0">
-        <h3 class="mb-6 flex items-center gap-2 text-lg font-semibold text-white">
-          <Icon name="cap" class="h-5 w-5 text-morado" />
-          Educación
-        </h3>
-        <div class="ml-1">
-          {educacion.map((e) => (
-            <div class="reveal relative border-l border-morado/25 pb-6 pl-6 last:pb-0">
-              <span aria-hidden="true" class="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full bg-morado shadow-[0_0_12px_rgba(157,0,255,0.8)]"></span>
-              <p class="mb-1 text-xs uppercase tracking-wider text-morado">{e.fecha}</p>
-              <p class="font-semibold t-strong">{e.titulo}</p>
-              <p class="text-sm text-texto/60">{e.centro}{e.detalle && ` · ${e.detalle}`}</p>
+          </div>
+
+          <div class="pasos-grupo" data-grupo="1">
+            <p class="pasos-indice">
+              <Icon name="cap" class="h-4 w-4" />
+              <span>02</span>
+              <span class="pasos-total">/ 03</span>
+            </p>
+            <h3 class="pasos-titulo">Educación</h3>
+            <div class="trayectoria-lista ml-1">
+              {educacion.map((e) => (
+                <div class="reveal relative border-l border-morado/25 pb-6 pl-6 last:pb-0">
+                  <span aria-hidden="true" class="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full bg-morado shadow-[0_0_12px_rgba(157,0,255,0.8)]"></span>
+                  <p class="mb-1 text-xs uppercase tracking-wider text-morado">{e.fecha}</p>
+                  <p class="font-semibold t-strong">{e.titulo}</p>
+                  <p class="text-sm text-texto/60">{e.centro}{e.detalle && ` · ${e.detalle}`}</p>
+                </div>
+              ))}
             </div>
-          ))}
+            <div class="reveal flex items-start gap-4 rounded-xl border border-morado/40 bg-morado/10 p-5">
+              <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-morado/30 bg-morado/10 text-morado">
+                <Icon name="user" class="h-5 w-5" />
+              </span>
+              <p class="text-sm leading-relaxed text-texto/70">
+                <span class="font-semibold t-strong">Voluntariado · Monitor de ocio y tiempo libre</span> (2026 – actual):
+                actividades socioeducativas para infancia y juventud.
+              </p>
+            </div>
+          </div>
+
+          <div class="pasos-grupo" data-grupo="2">
+            <p class="pasos-indice">
+              <Icon name="file" class="h-4 w-4" />
+              <span>03</span>
+              <span class="pasos-total">/ 03</span>
+            </p>
+            <h3 class="pasos-titulo">Certificaciones</h3>
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {certificaciones.map((c) => (
+                <article class="reveal flex min-w-0 flex-col rounded-xl border border-gris bg-gris/40 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-morado/60">
+                  <span class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg border border-morado/30 bg-morado/10 text-morado">
+                    <Icon name={c.icon} class="h-5 w-5" />
+                  </span>
+                  <p class="mb-1 text-lg font-bold t-strong">{c.titulo}</p>
+                  <p class="mb-1 text-xs uppercase tracking-wider text-morado">{c.emisor} · {c.fecha}</p>
+                  <p class="text-sm leading-relaxed text-texto/70">{c.detalle}</p>
+                </article>
+              ))}
+            </div>
+            <div class="reveal">
+              <a
+                href="/Ismael_CV.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 rounded border border-gris px-6 py-2 text-sm font-medium tracking-wider text-texto/70 transition-all hover:border-morado hover:text-morado"
+              >
+                <Icon name="eye" class="h-4 w-4" />
+                Ver detalle completo en mi CV
+              </a>
+            </div>
+          </div>
         </div>
-        <div class="reveal mt-6 flex items-start gap-4 rounded-xl border border-morado/40 bg-morado/10 p-5">
-          <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-morado/30 bg-morado/10 text-morado">
-            <Icon name="user" class="h-5 w-5" />
-          </span>
-          <p class="text-sm leading-relaxed text-texto/70">
-            <span class="font-semibold t-strong">Voluntariado · Monitor de ocio y tiempo libre</span> (2026 – actual):
-            actividades socioeducativas para infancia y juventud.
-          </p>
-        </div>
+        <div class="pasos-rail" aria-hidden="true"><span /></div>
       </div>
-    </div>
-    <h3 class="mb-6 mt-12 flex items-center gap-2 text-lg font-semibold text-white">
-      <Icon name="file" class="h-5 w-5 text-morado" />
-      Certificaciones
-    </h3>
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {certificaciones.map((c) => (
-        <article class="reveal flex min-w-0 flex-col rounded-xl border border-gris bg-gris/40 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-morado/60">
-          <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg border border-morado/30 bg-morado/10 text-morado">
-            <Icon name={c.icon} class="h-5 w-5" />
-          </span>
-          <p class="mb-2 text-xl font-bold t-strong">{c.titulo}</p>
-          <p class="mb-1 text-xs uppercase tracking-wider text-morado">{c.emisor} · {c.fecha}</p>
-          <p class="text-sm leading-relaxed text-texto/70">{c.detalle}</p>
-        </article>
-      ))}
-    </div>
-    <div class="reveal mt-8">
-      <a
-        href="/Ismael_CV.pdf"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex items-center gap-2 rounded border border-gris px-6 py-2 text-sm font-medium tracking-wider text-texto/70 transition-all hover:border-morado hover:text-morado"
-      >
-        <Icon name="eye" class="h-4 w-4" />
-        Ver detalle completo en mi CV
-      </a>
     </div>
   </section>
 
@@ -555,29 +600,29 @@ const contactos = [
     <!-- Vitrina: en escritorio el escenario se queda fijo y la joya gira con el
          scroll mientras cambian los capítulos. En móvil, sin JS o con movimiento
          reducido, los tres capítulos se leen como tarjetas normales. -->
-    <div class="vitrina" data-vitrina>
-      <div class="vitrina-stage">
-        <div class="vitrina-textos">
+    <div class="pasos pasos--joyas" data-escenario="joyas" data-pasos="3">
+      <div class="pasos-stage">
+        <div class="pasos-pista">
           {joyas.map((proyecto, i) => (
-            <article class="vitrina-capitulo">
-              <p class="vitrina-indice">
+            <article class="pasos-grupo" data-grupo={i}>
+              <p class="pasos-indice">
                 <Icon name={proyecto.icon} class="h-4 w-4" />
                 <span>0{i + 1}</span>
-                <span class="vitrina-total">/ 03</span>
+                <span class="pasos-total">/ 03</span>
               </p>
-              <h3 class="vitrina-titulo">{proyecto.titulo}</h3>
-              <p class="vitrina-desc">{proyecto.descripcion}</p>
-              <ul class="vitrina-tags">
+              <h3 class="pasos-titulo">{proyecto.titulo}</h3>
+              <p class="pasos-desc">{proyecto.descripcion}</p>
+              <ul class="pasos-tags">
                 {proyecto.tags.map((tag) => <li>{tag}</li>)}
               </ul>
-              <a class="vitrina-cta" href={proyecto.href} target="_blank" rel="noopener noreferrer">
+              <a class="pasos-cta" href={proyecto.href} target="_blank" rel="noopener noreferrer">
                 Ver proyecto <span aria-hidden="true">→</span>
               </a>
             </article>
           ))}
         </div>
-        <Escena3D client:visible variante="joya" className="vitrina-joya" />
-        <div class="vitrina-rail" aria-hidden="true"><span /></div>
+        <Escena3D client:visible variante="joya" className="pasos-joya" />
+        <div class="pasos-rail" aria-hidden="true"><span /></div>
       </div>
     </div>
   </section>
@@ -615,7 +660,39 @@ const contactos = [
         </span>
       )}
     </p>
-    {repos.length > 0 ? (
+    <!-- Con más de 4 repos el escenario los presenta por grupos; en móvil o
+         sin JS se leen seguidos, como una lista de tarjetas normal. -->
+    {gruposRepos.length > 1 ? (
+      <div class="pasos pasos--github" data-escenario="github" data-pasos={gruposRepos.length}>
+        <div class="pasos-stage">
+          <div class="pasos-pista">
+            {gruposRepos.map((grupo, i) => (
+              <div class="pasos-grupo" data-grupo={i}>
+                <p class="pasos-indice">
+                  <Icon name="github" class="h-4 w-4" />
+                  <span>0{i + 1}</span>
+                  <span class="pasos-total">/ 0{gruposRepos.length}</span>
+                </p>
+                <h3 class="pasos-titulo">
+                  Nodos {String(i * POR_GRUPO + 1).padStart(2, "0")}–{String(i * POR_GRUPO + grupo.length).padStart(2, "0")}
+                </h3>
+                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  {grupo.map((repo) => (
+                    <CardProyecto
+                      titulo={repo.name}
+                      descripcion={repo.description || "Sin descripción"}
+                      tags={[repo.language || "Varios", `${repo.stargazers_count} stars`]}
+                      href={repo.html_url}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div class="pasos-rail" aria-hidden="true"><span /></div>
+        </div>
+      </div>
+    ) : repos.length > 0 ? (
       <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {repos.slice(0, 12).map((repo) => (
           <CardProyecto

@@ -184,9 +184,9 @@ export function crearEscena(host, { reduced = false, variante = "hero" } = {}) {
   // Un único objeto Color compartido: cambiar el tema recolorea las tres mallas.
   const color = new Color(esClaro() ? MORADO_CLARO : MORADO);
 
-  // La joya de `#joyas` vive dentro de una vitrina: su giro y su color los dicta
-  // el progreso de scroll (variable `--vitrina`), no el reloj.
-  const vitrina = variante === "joya" ? host.closest("[data-vitrina]") : null;
+  // La joya de `#joyas` vive dentro de un escenario de pasos: su giro y su color
+  // los dicta el progreso de scroll (variable `--paso`), no el reloj.
+  const escenario = variante === "joya" ? host.closest("[data-escenario]") : null;
   let claro = esClaro();
 
   const PALETA = {
@@ -202,8 +202,8 @@ export function crearEscena(host, { reduced = false, variante = "hero" } = {}) {
   };
 
   const progreso = () => {
-    if (!vitrina) return 0;
-    const v = parseFloat(vitrina.style.getPropertyValue("--vitrina"));
+    if (!escenario) return 0;
+    const v = parseFloat(escenario.style.getPropertyValue("--paso"));
     return Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 0;
   };
 
@@ -313,7 +313,7 @@ export function crearEscena(host, { reduced = false, variante = "hero" } = {}) {
     actual.x += (objetivo.x - actual.x) * 0.045;
     actual.y += (objetivo.y - actual.y) * 0.045;
 
-    if (vitrina) {
+    if (escenario) {
       // Giro scrubbed: el scroll manda, con una deriva mínima para que no
       // parezca congelada mientras el escenario está fijo.
       const p = progreso();
@@ -354,7 +354,7 @@ export function crearEscena(host, { reduced = false, variante = "hero" } = {}) {
 
   const onThemeChange = () => {
     claro = esClaro();
-    if (vitrina) aplicarColor(progreso());
+    if (escenario) aplicarColor(progreso());
     else color.set(claro ? MORADO_CLARO : MORADO);
     if (reduced) pintar();
   };

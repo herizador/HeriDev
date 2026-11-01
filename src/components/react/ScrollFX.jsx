@@ -9,7 +9,9 @@ import { useEffect } from "react";
  * Contrato con el resto del proyecto:
  * - `[data-fx="hero"]`  bloque de texto del hero (se eleva y desvanece al bajar).
  * - `.fx-rule`          línea divisoria de sección (se dibuja de izquierda a derecha).
- * - `[data-fx="zoom"]`  miniatura del CV (entra con un leve zoom).
+ * - `[data-fx="zoom"]`  miniatura del CV (entra con zoom y leve giro).
+ * - `[data-escenario]`  escenario de pasos (joyas, terminal, trayectoria, GitHub):
+ *   sticky nativo + `--paso` (0–1), `data-paso` y evento `heridev:paso`.
  *
  * Reglas:
  * - Nunca toca `.reveal` ni `.tw-s-*`: esos los gestiona el Observer del layout.
@@ -20,34 +22,44 @@ export default function ScrollFX() {
   useEffect(() => {
     let ctx;
     let cancelado = false;
-    let limpiarVitrina = () => {};
+    let limpiarEscenarios = () => {};
 
     (async () => {
       // Comprobamos antes de importar: quien pide movimiento reducido no debe
       // descargar GSAP para nada.
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-      // 0. Vitrina de Las Joyas: no necesita GSAP. El escenario es `sticky`, así
-      // que el scroll es nativo (sin pin ni hijack); aquí solo se traduce el
-      // progreso a una variable CSS y al capítulo activo.
-      const vitrina = document.querySelector("[data-vitrina]");
-      if (vitrina) {
-        vitrina.classList.add("vitrina--activa");
+      // 0. Escenarios de pasos (joyas, terminal, trayectoria, GitHub): no
+      // necesitan GSAP. El escenario es `sticky`, así que el scroll es nativo
+      // (sin pin ni hijack); aquí solo se traduce el progreso a `--paso`, al
+      // paso activo y a un evento que consume el terminal.
+      const escenarios = Array.from(document.querySelectorAll("[data-escenario]"));
+      if (escenarios.length) {
+        escenarios.forEach((el) => el.classList.add("pasos--activo"));
         let frame = 0;
 
         const actualizar = () => {
           frame = 0;
-          const recorrido = vitrina.offsetHeight - window.innerHeight;
-          const progreso =
-            recorrido > 0
-              ? Math.min(1, Math.max(0, -vitrina.getBoundingClientRect().top / recorrido))
-              : 0;
 
-          vitrina.style.setProperty("--vitrina", progreso.toFixed(4));
+          for (const el of escenarios) {
+            const total = Number(el.dataset.pasos) || 1;
+            const recorrido = el.offsetHeight - window.innerHeight;
+            const progreso =
+              recorrido > 0
+                ? Math.min(1, Math.max(0, -el.getBoundingClientRect().top / recorrido))
+                : 0;
 
-          const capitulo = Math.min(2, Math.floor(progreso * 2.999));
-          if (vitrina.dataset.capitulo !== String(capitulo)) {
-            vitrina.dataset.capitulo = String(capitulo);
+            el.style.setProperty("--paso", progreso.toFixed(4));
+
+            const paso = Math.min(total - 1, Math.floor(progreso * (total - 0.001)));
+            if (el.dataset.paso !== String(paso)) {
+              el.dataset.paso = String(paso);
+              document.dispatchEvent(
+                new CustomEvent("heridev:paso", {
+                  detail: { id: el.dataset.escenario, paso, progreso },
+                })
+              );
+            }
           }
         };
 
@@ -59,12 +71,15 @@ export default function ScrollFX() {
         window.addEventListener("resize", pedir);
         actualizar();
 
-        limpiarVitrina = () => {
+        limpiarEscenarios = () => {
           window.removeEventListener("scroll", pedir);
           window.removeEventListener("resize", pedir);
           if (frame) cancelAnimationFrame(frame);
-          vitrina.classList.remove("vitrina--activa");
-          vitrina.removeAttribute("data-capitulo");
+          escenarios.forEach((el) => {
+            el.classList.remove("pasos--activo");
+            el.removeAttribute("data-paso");
+            el.style.removeProperty("--paso");
+          });
         };
       }
 
@@ -109,14 +124,18 @@ export default function ScrollFX() {
           });
         });
 
-        // 3. La miniatura del CV gana profundidad con un zoom atado al scroll.
+        // 3. La miniatura del CV gana profundidad con un zoom y un leve giro
+        //    atados al scroll (sin pin: la página nunca se queda bloqueada).
         const paper = document.querySelector('[data-fx="zoom"]');
         if (paper) {
           gsap.fromTo(
             paper,
-            { scale: 0.92 },
+            { scale: 0.92, rotateY: -8, rotateX: 5 },
             {
               scale: 1,
+              rotateY: 0,
+              rotateX: 0,
+              transformPerspective: 900,
               ease: "none",
               scrollTrigger: {
                 trigger: paper,
@@ -132,7 +151,7 @@ export default function ScrollFX() {
 
     return () => {
       cancelado = true;
-      limpiarVitrina();
+      limpiarEscenarios();
       ctx?.revert();
     };
   }, []);
