@@ -20,11 +20,53 @@ export default function ScrollFX() {
   useEffect(() => {
     let ctx;
     let cancelado = false;
+    let limpiarVitrina = () => {};
 
     (async () => {
       // Comprobamos antes de importar: quien pide movimiento reducido no debe
       // descargar GSAP para nada.
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      // 0. Vitrina de Las Joyas: no necesita GSAP. El escenario es `sticky`, así
+      // que el scroll es nativo (sin pin ni hijack); aquí solo se traduce el
+      // progreso a una variable CSS y al capítulo activo.
+      const vitrina = document.querySelector("[data-vitrina]");
+      if (vitrina) {
+        vitrina.classList.add("vitrina--activa");
+        let frame = 0;
+
+        const actualizar = () => {
+          frame = 0;
+          const recorrido = vitrina.offsetHeight - window.innerHeight;
+          const progreso =
+            recorrido > 0
+              ? Math.min(1, Math.max(0, -vitrina.getBoundingClientRect().top / recorrido))
+              : 0;
+
+          vitrina.style.setProperty("--vitrina", progreso.toFixed(4));
+
+          const capitulo = Math.min(2, Math.floor(progreso * 2.999));
+          if (vitrina.dataset.capitulo !== String(capitulo)) {
+            vitrina.dataset.capitulo = String(capitulo);
+          }
+        };
+
+        const pedir = () => {
+          if (!frame) frame = requestAnimationFrame(actualizar);
+        };
+
+        window.addEventListener("scroll", pedir, { passive: true });
+        window.addEventListener("resize", pedir);
+        actualizar();
+
+        limpiarVitrina = () => {
+          window.removeEventListener("scroll", pedir);
+          window.removeEventListener("resize", pedir);
+          if (frame) cancelAnimationFrame(frame);
+          vitrina.classList.remove("vitrina--activa");
+          vitrina.removeAttribute("data-capitulo");
+        };
+      }
 
       const [{ gsap }, scrollTriggerModule] = await Promise.all([
         import("gsap"),
@@ -90,6 +132,7 @@ export default function ScrollFX() {
 
     return () => {
       cancelado = true;
+      limpiarVitrina();
       ctx?.revert();
     };
   }, []);

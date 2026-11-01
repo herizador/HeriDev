@@ -369,6 +369,182 @@ section[id]:target {
   pointer-events: none;
 }
 
+/* ---- Vitrina de Las Joyas: capítulos atados al scroll (sticky, sin pin) ----
+   Por defecto (móvil, sin JS o con movimiento reducido) los tres capítulos son
+   tarjetas normales. ScrollFX añade `.vitrina--activa` y `data-capitulo` solo
+   cuando puede animar: entonces el escenario se queda fijo, la joya gira con el
+   progreso y los capítulos se relevan. */
+.vitrina {
+  --vitrina: 0;
+  position: relative;
+}
+
+.vitrina-textos {
+  display: grid;
+  gap: 1rem;
+}
+
+.vitrina-capitulo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid rgb(var(--color-gris));
+  border-radius: 0.75rem;
+  background: rgb(var(--color-fondo) / 0.6);
+}
+
+.vitrina-indice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: rgb(var(--color-morado));
+}
+
+.vitrina-total {
+  color: rgb(var(--color-texto) / 0.35);
+}
+
+.vitrina-titulo {
+  margin: 0;
+  font-family: "Anton", "Fira Code", monospace;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+[data-theme="light"] .vitrina-titulo {
+  color: rgb(var(--color-texto));
+}
+
+.vitrina-desc {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: rgb(var(--color-texto) / 0.55);
+}
+
+.vitrina-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vitrina-tags li {
+  padding: 0.15rem 0.55rem;
+  border: 1px solid rgb(var(--color-morado) / 0.35);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  color: rgb(var(--color-morado));
+}
+
+.vitrina-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+  padding: 0.45rem 1rem;
+  border: 1px solid rgb(var(--color-morado) / 0.5);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: rgb(var(--color-morado));
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.vitrina-cta:hover {
+  background: rgb(var(--color-morado));
+  color: #ffffff;
+}
+
+/* La joya y la barra de progreso solo existen en el escenario de escritorio. */
+.vitrina-joya,
+.vitrina-rail {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .vitrina--activa {
+    height: 360vh;
+  }
+
+  .vitrina--activa .vitrina-stage {
+    position: sticky;
+    top: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 520px;
+    align-items: center;
+    gap: 3rem;
+    height: 100vh;
+  }
+
+  .vitrina--activa .vitrina-textos {
+    position: relative;
+    display: block;
+    min-height: 24rem;
+  }
+
+  .vitrina--activa .vitrina-capitulo {
+    position: absolute;
+    inset: 0;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: none;
+    opacity: 0;
+    translate: 0 28px;
+    transition: opacity 0.45s ease, translate 0.45s ease;
+    pointer-events: none;
+  }
+
+  .vitrina--activa[data-capitulo="0"] .vitrina-capitulo:nth-child(1),
+  .vitrina--activa[data-capitulo="1"] .vitrina-capitulo:nth-child(2),
+  .vitrina--activa[data-capitulo="2"] .vitrina-capitulo:nth-child(3) {
+    opacity: 1;
+    translate: 0 0;
+    pointer-events: auto;
+  }
+
+  .vitrina--activa .vitrina-titulo {
+    font-size: clamp(3rem, 5vw, 4.75rem);
+  }
+
+  .vitrina--activa .vitrina-joya {
+    display: block;
+    width: 520px;
+    height: 520px;
+  }
+
+  .vitrina--activa .vitrina-rail {
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: calc(100% - 520px - 3rem);
+    height: 1px;
+    background: rgb(var(--color-morado) / 0.15);
+    overflow: hidden;
+  }
+
+  .vitrina--activa .vitrina-rail span {
+    position: absolute;
+    inset: 0;
+    transform: scaleX(var(--vitrina));
+    transform-origin: left center;
+    background: linear-gradient(to right, rgb(var(--color-morado)), rgb(var(--color-morado) / 0.2));
+  }
+}
+
 /* ---- Vista previa del CV (miniatura de documento) ---- */
 .cv-paper {
   background: #f4f1f7;

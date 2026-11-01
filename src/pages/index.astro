@@ -542,20 +542,43 @@ const contactos = [
   </section>
 
   <section id="joyas" class="mb-24">
-    <div class="relative mb-2 flex items-center gap-3">
+    <div class="mb-2 flex items-center gap-3">
       <h2 class="shrink-0 text-2xl font-semibold text-white">
         <span class="text-morado">#</span> Las Joyas de la Corona
       </h2>
       <span aria-hidden="true" class="fx-rule h-px flex-1 bg-gradient-to-r from-morado/50 to-transparent"></span>
-      <Escena3D client:idle variante="joya" className="absolute right-0 top-1/2 hidden h-[112px] w-[112px] -translate-y-1/2 xl:block" />
     </div>
     <p class="tw tw-s-joyas mb-8 text-sm text-texto/50">
       Proyectos estrella que definen mi stack y filosofía de desarrollo.
     </p>
-    <div class="grid gap-6 md:grid-cols-3">
-      {joyas.map((proyecto) => (
-        <CardProyecto {...proyecto} />
-      ))}
+
+    <!-- Vitrina: en escritorio el escenario se queda fijo y la joya gira con el
+         scroll mientras cambian los capítulos. En móvil, sin JS o con movimiento
+         reducido, los tres capítulos se leen como tarjetas normales. -->
+    <div class="vitrina" data-vitrina>
+      <div class="vitrina-stage">
+        <div class="vitrina-textos">
+          {joyas.map((proyecto, i) => (
+            <article class="vitrina-capitulo">
+              <p class="vitrina-indice">
+                <Icon name={proyecto.icon} class="h-4 w-4" />
+                <span>0{i + 1}</span>
+                <span class="vitrina-total">/ 03</span>
+              </p>
+              <h3 class="vitrina-titulo">{proyecto.titulo}</h3>
+              <p class="vitrina-desc">{proyecto.descripcion}</p>
+              <ul class="vitrina-tags">
+                {proyecto.tags.map((tag) => <li>{tag}</li>)}
+              </ul>
+              <a class="vitrina-cta" href={proyecto.href} target="_blank" rel="noopener noreferrer">
+                Ver proyecto <span aria-hidden="true">→</span>
+              </a>
+            </article>
+          ))}
+        </div>
+        <Escena3D client:visible variante="joya" className="vitrina-joya" />
+        <div class="vitrina-rail" aria-hidden="true"><span /></div>
+      </div>
     </div>
   </section>
 

@@ -42,11 +42,12 @@ const FORMAS = {
   joya: {
     vertices: VERTICES_OCTAEDRO,
     caras: CARAS_OCTAEDRO,
-    radio: 1.55,
-    detalle: 1,
+    radio: 1.5,
+    detalle: 2,
     escalaHalo: 1.34,
     giro: 1.7,
     inclinacion: 0.65,
+    camara: 6.4,
   },
 };
 
@@ -175,7 +176,7 @@ export function crearEscena(host, { reduced = false, variante = "hero" } = {}) {
   host.appendChild(gl.canvas);
 
   const camera = new Camera(gl, { fov: 45, near: 0.1, far: 100 });
-  camera.position.z = 5.2;
+  camera.position.z = forma.camara ?? 5.2;
   camera.perspective({ aspect: ancho / alto });
 
   const escena = new Transform();
@@ -183,8 +184,32 @@ export function crearEscena(host, { reduced = false, variante = "hero" } = {}) {
   // Un único objeto Color compartido: cambiar el tema recolorea las tres mallas.
   const color = new Color(esClaro() ? MORADO_CLARO : MORADO);
 
+  // La joya de `#joyas` vive dentro de una vitrina: su giro y su color los dicta
+  // el progreso de scroll (variable `--vitrina`), no el reloj.
+  const vitrina = variante === "joya" ? host.closest("[data-vitrina]") : null;
+  let claro = esClaro();
+
+  const PALETA = {
+    oscuro: [[157, 0, 255], [198, 110, 255]],
+    claro: [[109, 40, 140], [176, 118, 230]],
+  };
+
+  const aplicarColor = (p) => {
+    const [a, b] = claro ? PALETA.claro : PALETA.oscuro;
+    color.r = (a[0] + (b[0] - a[0]) * p) / 255;
+    color.g = (a[1] + (b[1] - a[1]) * p) / 255;
+    color.b = (a[2] + (b[2] - a[2]) * p) / 255;
+  };
+
+  const progreso = () => {
+    if (!vitrina) return 0;
+    const v = parseFloat(vitrina.style.getPropertyValue("--vitrina"));
+    return Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 0;
+  };
+
   // Los puntos se encogen en lienzos pequeños para que la densidad se parezca.
-  const tamanoPunto = (w, h) => Math.max(0.6, Math.min(w, h) / 320) * 3 * dpr;
+  const tamanoPunto = (w, h) =>
+    Math.max(0.6, Math.min(1.15, Math.min(w, h) / 320)) * 3 * dpr;
 
   const { vertices, aristas } = poliedro(forma, forma.radio, forma.detalle);
   const geoAristas = new Geometry(gl, { position: { size: 3, data: aristas } });
@@ -288,10 +313,21 @@ export function crearEscena(host, { reduced = false, variante = "hero" } = {}) {
     actual.x += (objetivo.x - actual.x) * 0.045;
     actual.y += (objetivo.y - actual.y) * 0.045;
 
-    nucleo.rotation.y = autoY + actual.x;
-    nucleo.rotation.x = actual.y * 0.75 * forma.inclinacion;
-    halo.rotation.y = -autoY * 0.45;
-    halo.rotation.z = autoY * 0.2;
+    if (vitrina) {
+      // Giro scrubbed: el scroll manda, con una deriva mínima para que no
+      // parezca congelada mientras el escenario está fijo.
+      const p = progreso();
+      nucleo.rotation.y = autoY * 0.3 + p * Math.PI * 2 * 1.4 + actual.x;
+      nucleo.rotation.x = Math.sin(p * Math.PI) * 0.45 + actual.y * 0.5;
+      halo.rotation.y = -p * Math.PI * 1.1 - autoY * 0.2;
+      halo.rotation.z = p * 0.8;
+      aplicarColor(p);
+    } else {
+      nucleo.rotation.y = autoY + actual.x;
+      nucleo.rotation.x = actual.y * 0.75 * forma.inclinacion;
+      halo.rotation.y = -autoY * 0.45;
+      halo.rotation.z = autoY * 0.2;
+    }
 
     pintar();
 
@@ -317,7 +353,9 @@ export function crearEscena(host, { reduced = false, variante = "hero" } = {}) {
   };
 
   const onThemeChange = () => {
-    color.set(esClaro() ? MORADO_CLARO : MORADO);
+    claro = esClaro();
+    if (vitrina) aplicarColor(progreso());
+    else color.set(claro ? MORADO_CLARO : MORADO);
     if (reduced) pintar();
   };
 
