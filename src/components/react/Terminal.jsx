@@ -12,7 +12,7 @@ const LINES = [
   "> heridev@portfolio:~$ ./build --prod",
   "> Construyendo portafolio cyberpunk...",
   "> Integrando escena 3D con OGL...",
-  "> Conectando a API de GitHub...",
+  "> Conectando con la API de GitHub...",
   "> Listo. Puerto 3000.",
 ];
 
@@ -124,7 +124,7 @@ export default function Terminal() {
   return (
     <div
       ref={ref}
-      className="terminal-caja w-full rounded-lg border border-morado/20 bg-fondo/90 p-4 font-mono text-sm shadow-lg"
+      className="terminal-caja w-full min-w-0 overflow-hidden rounded-lg border border-morado/20 bg-fondo/90 p-4 font-mono text-sm shadow-lg"
     >
       <div className="mb-2 flex items-center gap-2 border-b border-morado/10 pb-2">
         <span className="h-3 w-3 rounded-full bg-red-500" />
@@ -139,12 +139,14 @@ export default function Terminal() {
           const texto = completa ? linea : enCurso ? vista.parcial : "";
 
           return (
-            <div key={i} className="flex h-5 items-center">
-              <span className="whitespace-pre text-texto/80">{texto}</span>
+            <div key={i} className="flex min-h-5 items-center xl:h-5">
+              <span className="min-w-0 whitespace-pre-wrap break-words text-texto/80 xl:whitespace-pre">
+                {texto}
+              </span>
               {i === filaActiva && (
                 <span
                   aria-hidden="true"
-                  className="terminal-caret ml-px inline-block h-4 w-[2px] bg-morado"
+                  className="terminal-caret ml-px inline-block h-4 w-[2px] shrink-0 bg-morado"
                 />
               )}
             </div>
